@@ -1,0 +1,158 @@
+CODES FOR JAVA INTEFACE
+
+
+Connect_to_DB
+
+package trying_db2;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+
+public class Connect_to_DB {
+
+	public static void main(String[] args)
+	{
+		Connect_to_DB obj_ConnectDB = new Connect_to_DB();
+		System.out.println(obj_ConnectDB.GetConnection());
+	}
+	public Connection GetConnection() 
+	{
+		String cur_database = "jdbc:postgresql://localhost:5432/postgres";
+		String user = "postgres";
+		String password = "elju200postgre";
+
+		Connection connection=null;
+		try {
+			Class.forName("org.postgresql.Driver");
+		} catch (ClassNotFoundException e) {
+			System.out.println(e);
+		}
+		try {
+			connection = DriverManager.getConnection(cur_database, user, password);
+			// it is not localhost in final version
+			// and it won't be third_db
+			if (connection != null) {
+				System.out.println("Connection OK");
+			} else {
+				System.out.println("Connection Failed");
+			}
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+		return connection;
+	}
+}
+
+
+
+
+
+Create_table 
+// rename it 
+
+package trying_db2;
+import java.sql.Connection;
+import java.sql.Statement;
+
+public class Create_table 
+{
+	public static void main(String[] args)
+	{
+		Connection connection = null;
+		Connect_to_DB obj_ConnectDB = new Connect_to_DB();
+		connection = obj_ConnectDB.GetConnection();
+		
+		Statement statement = null;
+		try 
+		{
+			String query1 = "CREATE TABLE standard_person (\r\n"
+					+ "person_id BIGSERIAL NOT NULL PRIMARY KEY,\r\n"
+					+ "general_access_level smallint NOT NULL,\r\n"
+					+ "name VARCHAR(100),\r\n"
+					+ "email VARCHAR(50),\r\n"
+					+ "login VARCHAR(50) NOT NULL,\r\n"
+					+ "password VARCHAR(80) NOT NULL)";
+			String query2 = "CREATE TABLE standard_log (\r\n"
+					+ "log_id BIGSERIAL NOT NULL PRIMARY KEY,\r\n"
+					+ "log_type VARCHAR(40) NOT NULL,\r\n"
+					+ "message VARCHAR(300),\r\n"
+					+ "person_id BIGINT REFERENCES standard_person(person_id),\r\n"
+					+ "IP CIDR NOT NULL,\r\n"
+					+ "when_happened timestamp NOT NULL)";
+			String query3 = "CREATE TABLE standard_file (\r\n"
+					+ "id_of_file BIGSERIAL NOT NULL PRIMARY KEY,\r\n"
+					+ "path_to_file VARCHAR(150) NOT NULL,\r\n"
+					+ "file_name VARCHAR(150) NOT NULL,\r\n"
+					+ "general_access_level smallint NOT NULL,\r\n"
+					+ "creator_id BIGINT REFERENCES standard_person(person_id) )";
+			String query4 = "CREATE TABLE accesses (\r\n"
+					+ "access_id BIGSERIAL NOT NULL PRIMARY KEY,\r\n"
+					+ "id_of_file BIGINT NOT NULL REFERENCES standard_file(id_of_file),\r\n"
+					+ "person BIGINT NOT NULL REFERENCES standard_person(person_id),\r\n"
+					+ "access_level smallint NOT NULL);";
+			statement = connection.createStatement();
+			// What if one of them is already exists?
+			statement.executeUpdate(query1);
+			statement.executeUpdate(query2);
+			statement.executeUpdate(query3);
+			statement.executeUpdate(query4);
+			System.out.println("DB updated");
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+}
+
+
+
+
+
+
+
+
+DB_interact 
+// rename
+
+package trying_db2;
+
+import java.sql.Connection;
+import java.sql.Statement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.util.Scanner;
+
+public class DB_interact { // select
+
+	public static void main(String[] args) {
+		try {
+		Connection connection = null; //
+		Connect_to_DB obj_ConnectDB = new Connect_to_DB();
+		//System.out.println(obj_ConnectDB.GetConnection());
+		connection = obj_ConnectDB.GetConnection();
+		ResultSet rs = null;
+		Statement statement = null;
+		Scanner obj = new Scanner(System.in); 
+		String query = obj.nextLine();
+		statement = connection.createStatement();
+		//statement.executeUpdate(query);
+		rs = statement.executeQuery(query);
+		
+		ResultSetMetaData rsmd = rs.getMetaData();
+		int columnsNumber = rsmd.getColumnCount();
+		while (rs.next())
+		{
+			for (int i = 1; i <= columnsNumber; i++) {
+		        if (i > 1) System.out.print(",  ");
+		        String columnValue = rs.getString(i);
+		        System.out.print(columnValue + " (" + rsmd.getColumnName(i) + ")"); // only for select
+		        if (i == columnsNumber) System.out.println(".");
+		    }
+		}
+		}
+		catch (Exception e) {
+		e.printStackTrace();
+		}
+	}
+
+}

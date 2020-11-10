@@ -1,0 +1,62 @@
+DATABASE
+
+homeclouds.hopto.org 
+
+
+
+log in as  alexander
+sudo -i -u postgres
+psql
+\d - tables
+\l  - databases
+
+// perhaps IP through INET instead
+CREATE TABLE standart_person (
+person_id BIGSERIAL NOT NULL PRIMARY KEY,
+general_access_level smallint NOT NULL,
+name VARCHAR(100),
+email VARCHAR(50),
+login VARCHAR(50) NOT NULL,
+password VARCHAR(80) NOT NULL
+);
+
+CREATE TABLE standart_log (
+log_id BIGSERIAL NOT NULL PRIMARY KEY,
+log_type VARCHAR(40) NOT NULL,
+message VARCHAR(300),
+person_id BIGINT REFERENCES standart_person(person_id),
+IP CIDR NOT NULL,
+when_happened timestamp NOT NULL);
+
+CREATE TABLE standart_file (
+id_of_file BIGSERIAL NOT NULL PRIMARY KEY,
+path_to_file VARCHAR(150) NOT NULL,
+file_name VARCHAR(150) NOT NULL,
+general_access_level smallint NOT NULL,
+creator _id BIGINT REFERENCES standart_person(person_id) );
+
+CREATE TABLE accesses (
+access_id BIGSERIAL NOT NULL PRIMARY KEY,
+id_of_file BIGINT NOT NULL REFERENCES standart_file(id_of_file),
+person BIGINT NOT NULL REFERENCES standart_person(person_id)
+access_level smallint NOT NULL);
+
+
+ALTER TABLE standart_log RENAME TO standard_log;
+ALTER TABLE standart_file RENAME TO standard_file;
+ALTER TABLE standart_person RENAME TO standard_person;
+ALTER TABLE standard_file RENAME COLUMN creator_if TO creator_id;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
