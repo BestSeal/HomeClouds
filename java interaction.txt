@@ -1,118 +1,6 @@
 CODES FOR JAVA INTEFACE
 
 
-Connect_to_DB
-
-package trying_db2;
-
-import java.sql.Connection;
-import java.sql.DriverManager;
-
-public class Connect_to_DB {
-
-	public static void main(String[] args)
-	{
-		Connect_to_DB obj_ConnectDB = new Connect_to_DB();
-		System.out.println(obj_ConnectDB.GetConnection());
-	}
-	public Connection GetConnection() 
-	{
-		String cur_database = "jdbc:postgresql://localhost:5432/postgres";
-		String user = "postgres";
-		String password = "elju200postgre";
-
-		Connection connection=null;
-		try {
-			Class.forName("org.postgresql.Driver");
-		} catch (ClassNotFoundException e) {
-			System.out.println(e);
-		}
-		try {
-			connection = DriverManager.getConnection(cur_database, user, password);
-			// it is not localhost in final version
-			// and it won't be third_db
-			if (connection != null) {
-				System.out.println("Connection OK");
-			} else {
-				System.out.println("Connection Failed");
-			}
-		} catch (Exception e) {
-			System.out.println(e);
-		}
-		return connection;
-	}
-}
-
-
-
-
-
-Create_table 
-// rename it 
-
-package trying_db2;
-import java.sql.Connection;
-import java.sql.Statement;
-
-public class Create_table 
-{
-	public static void main(String[] args)
-	{
-		Connection connection = null;
-		Connect_to_DB obj_ConnectDB = new Connect_to_DB();
-		connection = obj_ConnectDB.GetConnection();
-		
-		Statement statement = null;
-		try 
-		{
-			String query1 = "CREATE TABLE standard_person (\r\n"
-					+ "person_id BIGSERIAL NOT NULL PRIMARY KEY,\r\n"
-					+ "general_access_level smallint NOT NULL,\r\n"
-					+ "name VARCHAR(100),\r\n"
-					+ "email VARCHAR(50),\r\n"
-					+ "login VARCHAR(50) NOT NULL,\r\n"
-					+ "password VARCHAR(80) NOT NULL)";
-			String query2 = "CREATE TABLE standard_log (\r\n"
-					+ "log_id BIGSERIAL NOT NULL PRIMARY KEY,\r\n"
-					+ "log_type VARCHAR(40) NOT NULL,\r\n"
-					+ "message VARCHAR(300),\r\n"
-					+ "person_id BIGINT REFERENCES standard_person(person_id),\r\n"
-					+ "IP CIDR NOT NULL,\r\n"
-					+ "when_happened timestamp NOT NULL)";
-			String query3 = "CREATE TABLE standard_file (\r\n"
-					+ "id_of_file BIGSERIAL NOT NULL PRIMARY KEY,\r\n"
-					+ "path_to_file VARCHAR(150) NOT NULL,\r\n"
-					+ "file_name VARCHAR(150) NOT NULL,\r\n"
-					+ "general_access_level smallint NOT NULL,\r\n"
-					+ "creator_id BIGINT REFERENCES standard_person(person_id) )";
-			String query4 = "CREATE TABLE accesses (\r\n"
-					+ "access_id BIGSERIAL NOT NULL PRIMARY KEY,\r\n"
-					+ "id_of_file BIGINT NOT NULL REFERENCES standard_file(id_of_file),\r\n"
-					+ "person BIGINT NOT NULL REFERENCES standard_person(person_id),\r\n"
-					+ "access_level smallint NOT NULL);";
-			statement = connection.createStatement();
-			// What if one of them is already exists?
-			statement.executeUpdate(query1);
-			statement.executeUpdate(query2);
-			statement.executeUpdate(query3);
-			statement.executeUpdate(query4);
-			System.out.println("DB updated");
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-}
-
-
-
-
-
-
-
-
-DB_interact 
-// rename
 
 package trying_db2;
 
@@ -122,37 +10,470 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.util.Scanner;
 
-public class DB_interact { // select
-
-	public static void main(String[] args) {
-		try {
-		Connection connection = null; //
-		Connect_to_DB obj_ConnectDB = new Connect_to_DB();
-		//System.out.println(obj_ConnectDB.GetConnection());
-		connection = obj_ConnectDB.GetConnection();
-		ResultSet rs = null;
-		Statement statement = null;
-		Scanner obj = new Scanner(System.in); 
-		String query = obj.nextLine();
-		statement = connection.createStatement();
-		//statement.executeUpdate(query);
-		rs = statement.executeQuery(query);
-		
-		ResultSetMetaData rsmd = rs.getMetaData();
-		int columnsNumber = rsmd.getColumnCount();
-		while (rs.next())
+public class DatabaseSELECT 
+{ // select
+	public static void main(String[] args) 
+	{
+		// add SELECTQuery from String[] args
+		try 
 		{
-			for (int i = 1; i <= columnsNumber; i++) {
-		        if (i > 1) System.out.print(",  ");
-		        String columnValue = rs.getString(i);
-		        System.out.print(columnValue + " (" + rsmd.getColumnName(i) + ")"); // only for select
-		        if (i == columnsNumber) System.out.println(".");
-		    }
+			// connect to database  
+			ConnectToDatabase obj_ConnectDB = new ConnectToDatabase();
+			Connection connection = obj_ConnectDB.GetConnection();
+			
+			Scanner scanner = new Scanner(System.in); 
+			String SELECTQuery = scanner.nextLine();
+			
+			// executing SELECTQuery and writing results in ResultSet
+			Statement statement = connection.createStatement();
+			ResultSet rs = statement.executeQuery(SELECTQuery);
+			
+			// results metadata, like column names and such
+			ResultSetMetaData rsmd = rs.getMetaData();
+			int columnsNumber = rsmd.getColumnCount();
+			
+			// writing out SELECT results
+			while (rs.next())
+			{
+				for (int i = 1; i <= columnsNumber; i++) 
+				{
+					if (i > 1) System.out.print(",  ");
+					String columnValue = rs.getString(i);
+					System.out.print(columnValue + " (" + rsmd.getColumnName(i) + ")"); 
+					if (i == columnsNumber) System.out.println(".");
+				}
+			}
+			
+			scanner.close();
 		}
-		}
-		catch (Exception e) {
-		e.printStackTrace();
+		catch (Exception e) 
+		{
+			// check it for 
+			// "org.postgresql.util.PSQLException: Запрос не вернул результатов."
+			// in the future
+			e.printStackTrace();
 		}
 	}
-
 }
+
+
+
+package trying_db2;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+
+public class ConnectToDatabase 
+{
+
+	public static void main(String[] args)
+	{
+		// connect
+		// yet it's kinda expensive to do it every time
+		ConnectToDatabase obj_ConnectDB = new ConnectToDatabase();
+		//System.out.println(obj_ConnectDB.GetConnection());
+	}
+	
+	public Connection GetConnection() // add throws exception instead of try?
+	{
+		// database data
+		String cur_database = "jdbc:postgresql://localhost:5432/postgres"; 
+		// will it also be localhost in the final version? 
+		// user data
+		String user = "postgres"; 
+		String password = "elju200postgre";
+		// perhaps I should add it to constant
+
+		Connection connection = null;
+		try 
+		{
+			Class.forName("org.postgresql.Driver");
+		} catch (ClassNotFoundException e) 
+		{
+			System.out.println(e); //
+		}
+		try 
+		{
+			// trying to connect
+			connection = DriverManager.getConnection(cur_database, user, password);
+			if (connection != null) 
+				System.out.println("Connection successful");
+			else 
+				System.out.println("Connection failed");
+		} catch (Exception e) {
+			System.out.println(e); //
+		}
+		return connection;
+	}
+}
+
+
+
+package trying_db2;
+
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.Scanner;
+
+// table information is used
+// and it have changed, so code doesn't work
+// perhaps outsource it somewhere?
+
+public class DatabaseINSERT 
+{
+	public static void main(String[] argst)  // change back
+	{
+		//int c = args.length;
+		// connection
+		ConnectToDatabase obj_ConnectDB = new ConnectToDatabase();
+		Connection connection = obj_ConnectDB.GetConnection();
+		String INSERTQuery = "";
+		
+		// 
+		//String[] args;
+		
+		String[] args = new String[5];
+		//if (args.length == 0) // for testing purpuses ONLY
+		/*
+		{
+			args[0] = "standard_person";
+			args[1] = "1";
+			args[2] = "Sanya";
+			args[3] = "sanya@gmail.com";
+			args[4] = "alexander";
+			args[5] = "alexander_pass";
+		}
+		{
+			args[0] = "standard_person";
+			args[1] = "0";
+			args[2] = "Zhenya";
+			args[3] = "evgeney@gmail.com";
+			args[4] = "evgeney";
+			args[5] = "evgeney_pass";
+		}
+		{
+			args[0] = "standard_person";
+			args[1] = "0";
+			args[2] = "other";
+			args[3] = "PerSon@gmail.com";
+			args[4] = "I";
+			args[5] = "qwertyuiop";
+		}
+		{
+			args[0] = "standard_file";
+			args[1] = "/evgeney/files";
+			args[2] = "first_file";
+			args[3] = "1"; // can be seen and read
+			args[4] = "1"; // login, 
+		}
+		{
+			args[0] = "accesses";
+			args[1] = "1";
+			args[2] = "1";
+			args[3] = "2"; // can be changed
+		}
+		{
+			args[0] = "standard_file";
+			args[1] = "/evgeney/files";
+			args[2] = "second_file";
+			args[3] = "1"; // can be seen and read
+			args[4] = "2";
+		}
+		{
+			args[0] = "standard_file";
+			args[1] = "/alexander";
+			args[2] = "some_db_info";
+			args[3] = "1"; // can be seen and read
+			args[4] = "3";
+		}
+		*/
+		
+		if (args.length != 0) 
+		{
+			// not checked it yet
+			// checks on not null // or just transfer DB messages
+			// check if person_id, creator_id and such actually exist
+			///*
+			INSERTQuery = "INSERT INTO " + args[0];
+			if (args[0] == "standard_log_entry" && args.length == (6 - 1 + 1)) // bigserial -> -1, first line is tableName -> +1
+			{
+				INSERTQuery += " (log_type, message, person_id, IP, when_happened) VALUES (";
+				//possibly add two funcs, insInt and insStr? 
+				INSERTQuery += "'" + args[1] + "', "; // log_type
+				INSERTQuery += "'" + args[2] + "', "; // message
+				INSERTQuery += args[3] + ", "; // person_id
+				INSERTQuery += "'" + args[4] + "', "; // IP
+				INSERTQuery += "'" + args[5] + "')"; // when_happened
+			} else if (args[0] == "standard_person" && args.length == (6 - 1 + 1))
+			{
+				INSERTQuery += " (user_access_levels, name, email, login, password) VALUES (";
+				INSERTQuery += args[1]; // general_access_level
+				for (int i = 2; i < 6; i++)
+					INSERTQuery += ", '" + args[i] + "'"; // name, email, login, password
+				INSERTQuery += ")";
+			} else if (args[0] == "standard_file" && args.length == (5 - 1 + 1))
+			{
+				INSERTQuery += " (path_to_file, file_name, general_file_access_level, creator_id) VALUES (";
+				INSERTQuery += "'" + args[1] + "', "; // path_to_file
+				INSERTQuery += "'" + args[2] + "', "; // file_name
+				INSERTQuery += args[3] + ", "; // general_access_level
+				INSERTQuery += args[4] + ")"; // creator_id
+			} else if (args[0] == "accesses" && args.length == (4 - 1 + 1)) // one c??
+			{
+				INSERTQuery += " (id_of_file, person_login, file_access_level) VALUES (";
+				INSERTQuery += args[1] + ", "; // id_of_file
+				INSERTQuery += "'" + args[2] + "', "; // person_login
+				INSERTQuery += args[3] + ")"; // access_level
+			} else System.out.println("Error, unknown type"); // stop program
+			//*/
+		}
+		else
+		{
+			// for now under //
+			Scanner scanner = new Scanner(System.in); 
+			INSERTQuery = scanner.nextLine();
+			// if first is insert
+		}
+		try 
+		{
+			Statement statement = connection.createStatement();
+			// add checks
+			// and try to break it
+			statement.executeUpdate(INSERTQuery);
+			System.out.println("We can only assume that it worked.");
+		} catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+	}
+}
+
+
+
+package trying_db2;
+
+import java.sql.Connection;
+import java.sql.Statement;
+public class DropTables 
+{
+
+	public static void main(String[] args) 
+	{
+		// connect to DB
+		ConnectToDatabase obj_ConnectDB = new ConnectToDatabase();
+		Connection connection = obj_ConnectDB.GetConnection();
+		try 
+		{
+			// statements for dropping tables.
+			String user_access_levels = "DROP TABLE user_access_levels";
+			String file_access_levels = "DROP TABLE file_access_levels";
+			String standard_file = "DROP TABLE standard_file";
+			String accesses = "DROP TABLE accesses";
+			String standard_log_entry = "DROP TABLE standard_log_entry";
+			String standard_person = "DROP TABLE standard_person";
+			Statement statement = connection.createStatement();
+			// executing those statements if those tables do exist.
+			if (CreateTables.CheckTableForExistence("user_access_levels", statement))
+				statement.executeUpdate(user_access_levels);
+			if (CreateTables.CheckTableForExistence("file_access_levels", statement))
+				statement.executeUpdate(file_access_levels);
+			if (CreateTables.CheckTableForExistence("standard_file", statement))
+				statement.executeUpdate(standard_file);
+			if (CreateTables.CheckTableForExistence("accesses", statement))
+				statement.executeUpdate(accesses);
+			if (CreateTables.CheckTableForExistence("standard_log_entry", statement))
+				statement.executeUpdate(standard_log_entry);
+			if (CreateTables.CheckTableForExistence("standard_person", statement))
+				statement.executeUpdate(standard_person);
+			System.out.println("Tables do not exist now");
+		}
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+	}
+}
+
+
+
+package trying_db2;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.sql.SQLException;
+import java.io.File;  // Import the File class
+import java.io.FileNotFoundException;  // Import this class to handle errors
+import java.util.Scanner; // Import the Scanner class to read text files
+
+// table information is used
+// "check" will be code word
+
+public class CreateTables 
+{
+	public static void main(String[] args)
+	{
+		// connect to DB
+		ConnectToDatabase obj_ConnectDB = new ConnectToDatabase();
+		Connection connection = obj_ConnectDB.GetConnection();
+		
+		// getting information about tables from file
+		try 
+		{
+			File fileObj = new File("tableInformation.txt");
+			Scanner fileReader = new Scanner(fileObj);
+			while (fileReader.hasNextLine()) 
+			{
+				String data = fileReader.nextLine();
+			}
+			fileReader.close();
+		} catch (FileNotFoundException e) 
+		{
+			System.out.println("An error occurred.");
+			e.printStackTrace();
+		}
+		try 
+		{
+			// statements for creating tables.
+			String user_access_levels = "CREATE TABLE user_access_levels (\r\n"
+					+ "access_level SMALLINT NOT NULL PRIMARY KEY,\r\n"
+					+ "access_level_name VARCHAR(20) NOT NULL, \r\n"
+					+ "access_level_description VARCHAR(50) NOT NULL)";
+			String user_access_levels_0 = "INSERT INTO user_access_levels \r\n" // can this INSERT INTO be outsourced?
+					+ "(access_level, access_level_name, access_level_description) VALUES ";
+			// how to make sure there's only one admin? There or in disk itself?
+			String user_access_levels_1 = "(1, 'admin', 'Can do everything')";
+			String user_access_levels_2 = "(0, 'regular user', 'Regular, rights are regulated')";
+			String file_access_levels = "CREATE TABLE file_access_levels (\r\n"
+					+ "access_level SMALLINT NOT NULL PRIMARY KEY, \r\n"
+					+ "access_level_name VARCHAR(20) NOT NULL, \r\n"
+					+ "access_level_description VARCHAR(50) NOT NULL)";
+			String file_access_levels_0 = "INSERT INTO file_access_levels \r\n"
+					+ "(access_level, access_level_name, access_level_description) VALUES ";
+			String file_access_levels_1 = "(0, 'invisible', 'File is not visible for regular users')";
+			String file_access_levels_2 = "(1, 'read', 'Can be read')";
+			String file_access_levels_3 = "(2, 'write', 'Can be copied for modification')";
+			String file_access_levels_4 = "(3, 'all', 'You are admin for this file. No restrictions')";
+			String standard_person = "CREATE TABLE standard_person (\r\n"
+					+ "person_id BIGSERIAL NOT NULL PRIMARY KEY,\r\n"
+					+ "user_access_levels SMALLINT NOT NULL REFERENCES user_access_levels(access_level_name),\r\n"
+					+ "name VARCHAR(150),\r\n"
+					+ "email VARCHAR(80) UNIQUE,\r\n"
+					+ "login VARCHAR(80) NOT NULL UNIQUE,\r\n"
+					+ "password VARCHAR(40) NOT NULL)";
+			// check that password is not "qwerty"
+			String standard_log_entry = "CREATE TABLE standard_log_entry (\r\n"
+					+ "entry_id BIGSERIAL NOT NULL PRIMARY KEY,\r\n"
+					+ "entry_type VARCHAR(50) NOT NULL,\r\n"
+					// it would be to complicated to 
+					// create definitive table of log_types 
+					+ "message VARCHAR(300),\r\n"
+					+ "person_login BIGINT REFERENCES standard_person(login),\r\n"
+					+ "IP INET,\r\n"
+					+ "when_happened timestamp NOT NULL)";
+			// IP CIDR NOT NULL is necessary for security purposes, but we can't do that just yet
+			// INET or CIDR?
+			// or perhaps it is just necessary for log_type ~=~ "signIn"?
+			// can combo of path_to_fike and file_name be UNIQUE?
+			String standard_file = "CREATE TABLE standard_file (\r\n"
+					+ "id_of_file BIGSERIAL NOT NULL PRIMARY KEY,\r\n"
+					+ "path_to_file VARCHAR(150) NOT NULL,\r\n"
+					+ "file_name VARCHAR(150) NOT NULL,\r\n"
+					+ "general_file_access_level smallint NOT NULL,\r\n"
+					+ "creator_id BIGINT REFERENCES standard_person(person_id) )";
+			// can combo of all id's be unique
+			String accesses = "CREATE TABLE accesses (\r\n"
+					+ "access_id BIGSERIAL NOT NULL PRIMARY KEY,\r\n"
+					+ "id_of_file BIGINT NOT NULL REFERENCES standard_file(id_of_file),\r\n"
+					+ "person_id BIGINT NOT NULL REFERENCES standard_person(person_id),\r\n"
+					+ "file_access_level smallint NOT NULL);";
+			Statement statement = connection.createStatement();
+			// executing those statements if those tables do not exist.
+			if (!CheckTableForExistence("user_access_levels", statement))
+			{
+				statement.executeUpdate(user_access_levels);
+				statement.executeUpdate(user_access_levels_0 + user_access_levels_1);
+				statement.executeUpdate(user_access_levels_0 + user_access_levels_2);
+			}
+			if (!CheckTableForExistence("file_access_levels", statement))
+			{
+				statement.executeUpdate(file_access_levels);
+				statement.executeUpdate(file_access_levels_0 + file_access_levels_1);
+				statement.executeUpdate(file_access_levels_0 + file_access_levels_2);
+				statement.executeUpdate(file_access_levels_0 + file_access_levels_3);
+				statement.executeUpdate(file_access_levels_0 + file_access_levels_4);
+			}
+			if (!CheckTableForExistence("standard_person", statement))
+				statement.executeUpdate(standard_person);
+			if (!CheckTableForExistence("standard_log_entry", statement))
+				statement.executeUpdate(standard_log_entry);
+			if (!CheckTableForExistence("standard_file", statement))
+				statement.executeUpdate(standard_file);
+			if (!CheckTableForExistence("accesses", statement))
+				statement.executeUpdate(accesses);
+			System.out.println("Tables exist now");
+		}
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	public static Boolean CheckTableForExistence(String tableName, Statement statement) throws SQLException
+	{
+		// searching database for table
+		String check_query = "SELECT to_regclass('public." + tableName + "')";
+		ResultSet rs = statement.executeQuery(check_query);
+		rs.next();
+	    if (rs.getString(1) == null)
+		{
+			return false; // it doesn't exist
+		}
+		else
+		{
+			return true; // it does exist
+		}
+	}
+}
+
+
+
+List of problems and things to do:
+1. It is still on my computer. Need to transfer it to disk and adapt.
+2. It is unwieldy tool. How can it be used?
+4. There are no checks for proper values.
+6. Still WIP, but it is a good thing. Hopeful.
+7. Database will be updated, so we will have to change it. 
+8. Commentaries are missing, too.
+9. Data insertion is all well and good, but what about data retrieval? 
+	9a. What about it?
+10. How to bypass security?
+11. How to store file? // Today
+12. Log and password of every user - outsource it to safer place
+13. Log day, when archive
+15. Backups of DB. By days. Especially logs.
+	15a. How to make backups of constantly working/changing DB.
+16. Autosaving logs is necessary.
+17. Logs for critical situations with immediate backups.
+18. Additional checks, listener.
+19. Additional class for log files.
+20. IP log can be NULL.
+21. Access to directories gives you access to their content.
+22. How level of user and level of file interact.
+23. File accesses: visible, readable, can be redacted.
+24. Creating copy and merging
+25. Separate table for list of accesses.
+26. Share - log it how.
+28. How to deal with error messages?
+29. Move tables data into file. //
+30. Add smth to interact with DatabaseINSERT
+31. Insertions are insufficiently tested.
+32. Create list of forbidden passwords.
+
+
+
+
+3. Create_table is not regulated. FIXED - now there's checks, if not balances
+5. Insertions are half-finished. FIXED
+14. Log rename to entry FIXED
+27. How to delete tables?	FIXED, I have created an method

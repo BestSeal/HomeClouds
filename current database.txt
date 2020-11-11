@@ -10,52 +10,57 @@ psql
 \d - tables
 \l  - databases
 
-// perhaps IP through INET instead
-CREATE TABLE standart_person (
-person_id BIGSERIAL NOT NULL PRIMARY KEY,
-general_access_level smallint NOT NULL,
-name VARCHAR(100),
-email VARCHAR(50),
-login VARCHAR(50) NOT NULL,
-password VARCHAR(80) NOT NULL
+CREATE TABLE user_access_levels (
+access_level SMALLINT NOT NULL PRIMARY KEY,
+access_level_name VARCHAR(20) NOT NULL, 
+access_level_description VARCHAR(50) NOT NULL
 );
-
-CREATE TABLE standart_log (
-log_id BIGSERIAL NOT NULL PRIMARY KEY,
-log_type VARCHAR(40) NOT NULL,
+INSERT INTO user_access_levels (access_level, access_level_name, access_level_description) VALUES
+(1, 'admin', 'Can do everything');
+INSERT INTO user_access_levels (access_level, access_level_name, access_level_description) VALUES
+(0, 'regular user', 'Regular, rights are regulated');
+CREATE TABLE file_access_levels (
+access_level SMALLINT NOT NULL PRIMARY KEY,
+access_level_name VARCHAR(20) NOT NULL,
+access_level_description VARCHAR(50) NOT NULL
+);
+INSERT INTO file_access_levels (access_level, access_level_name, access_level_description) VALUES
+(0, 'invisible', 'File is not visible for regular users');
+INSERT INTO file_access_levels (access_level, access_level_name, access_level_description) VALUES
+(1, 'read', 'Can be read');
+INSERT INTO file_access_levels (access_level, access_level_name, access_level_description) VALUES
+(2, 'write', 'Can be copied for modification');
+INSERT INTO file_access_levels (access_level, access_level_name, access_level_description) VALUES
+(3, 'all', 'You are admin for this file. No restrictions');
+CREATE TABLE standard_person (
+person_id BIGSERIAL NOT NULL PRIMARY KEY,
+user_access_levels SMALLINT NOT NULL REFERENCES user_access_levels(access_level_name),
+name VARCHAR(150),
+email VARCHAR(80) UNIQUE,
+login VARCHAR(80) NOT NULL UNIQUE,
+password VARCHAR(40) NOT NULL
+);
+CREATE TABLE standard_log_entry (
+entry_id BIGSERIAL NOT NULL PRIMARY KEY,
+entry_type VARCHAR(50) NOT NULL,
 message VARCHAR(300),
-person_id BIGINT REFERENCES standart_person(person_id),
-IP CIDR NOT NULL,
-when_happened timestamp NOT NULL);
-
-CREATE TABLE standart_file (
+person_login BIGINT REFERENCES standard_person(login),
+IP INET,
+when_happened timestamp NOT NULL
+);
+CREATE TABLE standard_file (
 id_of_file BIGSERIAL NOT NULL PRIMARY KEY,
 path_to_file VARCHAR(150) NOT NULL,
 file_name VARCHAR(150) NOT NULL,
-general_access_level smallint NOT NULL,
-creator _id BIGINT REFERENCES standart_person(person_id) );
-
+general_file_access_level smallint NOT NULL,
+creator_id BIGINT REFERENCES standard_person(person_id)
+);
 CREATE TABLE accesses (
 access_id BIGSERIAL NOT NULL PRIMARY KEY,
-id_of_file BIGINT NOT NULL REFERENCES standart_file(id_of_file),
-person BIGINT NOT NULL REFERENCES standart_person(person_id)
-access_level smallint NOT NULL);
-
-
-ALTER TABLE standart_log RENAME TO standard_log;
-ALTER TABLE standart_file RENAME TO standard_file;
-ALTER TABLE standart_person RENAME TO standard_person;
-ALTER TABLE standard_file RENAME COLUMN creator_if TO creator_id;
-
-
-
-
-
-
-
-
-
-
+id_of_file BIGINT NOT NULL REFERENCES standard_file(id_of_file),
+person_id BIGINT NOT NULL REFERENCES standard_person(person_id),
+file_access_level smallint NOT NULL
+);
 
 
 
