@@ -40,5 +40,4 @@ VALUES ('Jake', 'Somebody', 'MALE', DATE '1993-01-09');
 
 SELECT * FROM person;
 
-https://www.mockaroo.com/
-
+https://www.mockaroo.com/ - can help you
