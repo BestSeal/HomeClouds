@@ -62,45 +62,31 @@ package trying_db2;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.SQLException;
 
 public class ConnectToDatabase 
 {
+	// yet it's kinda expensive to do connecting every time
 
-	public static void main(String[] args)
-	{
-		// connect
-		// yet it's kinda expensive to do it every time
-		ConnectToDatabase obj_ConnectDB = new ConnectToDatabase();
-		//System.out.println(obj_ConnectDB.GetConnection());
-	}
-	
 	public Connection GetConnection() // add throws exception instead of try?
 	{
-		// database data
-		String cur_database = "jdbc:postgresql://localhost:5432/postgres"; 
+		final String curDatabase = "jdbc:postgresql://localhost:5432/postgres"; // database data 
 		// will it also be localhost in the final version? 
-		// user data
-		String user = "postgres"; 
-		String password = "elju200postgre";
-		// perhaps I should add it to constant
+		final String user = "postgres"; // user data
+		final String password = "elju200postgre"; // user data
 
 		Connection connection = null;
 		try 
 		{
-			Class.forName("org.postgresql.Driver");
-		} catch (ClassNotFoundException e) 
-		{
-			System.out.println(e); //
-		}
-		try 
-		{
+			Class.forName("org.postgresql.Driver"); 
 			// trying to connect
-			connection = DriverManager.getConnection(cur_database, user, password);
+			connection = DriverManager.getConnection(curDatabase, user, password);
 			if (connection != null) 
 				System.out.println("Connection successful");
 			else 
 				System.out.println("Connection failed");
-		} catch (Exception e) {
+		} catch (ClassNotFoundException | SQLException e) 
+		{
 			System.out.println(e); //
 		}
 		return connection;
@@ -109,33 +95,32 @@ public class ConnectToDatabase
 
 
 
+
 package trying_db2;
 
 import java.sql.Connection;
-import java.sql.ResultSet;
+import java.sql.ResultSet; // never used, why so
 import java.sql.Statement;
 import java.util.Scanner;
 
 // table information is used
-// and it have changed, so code doesn't work
+// and it have changed, so CODE NO LONGER WORKS
 // perhaps outsource it somewhere?
+ 
 
 public class DatabaseINSERT 
 {
-	public static void main(String[] argst)  // change back
+	public static void main(String[] args)  // changed back
 	{
-		//int c = args.length;
 		// connection
 		ConnectToDatabase obj_ConnectDB = new ConnectToDatabase();
 		Connection connection = obj_ConnectDB.GetConnection();
 		String INSERTQuery = "";
 		
-		// 
-		//String[] args;
-		
-		String[] args = new String[5];
-		//if (args.length == 0) // for testing purpuses ONLY
 		/*
+		 * String[] args = new String[5];
+		//if (args.length == 0) // for testing purpuses ONLY
+		
 		{
 			args[0] = "standard_person";
 			args[1] = "1";
@@ -255,37 +240,36 @@ package trying_db2;
 
 import java.sql.Connection;
 import java.sql.Statement;
+
+// WARNING: DANGEROUS CLASS
+// USING MAIN WILL EMPTY ALL DATA IN ALL DISK TABLES
+// is there better way to describe it? 
+// I remember some rules for documentation in lab 1
+
 public class DropTables 
 {
-
 	public static void main(String[] args) 
 	{
+		String[] tableNamesInDeletionOrder = {"accesses", "standard_file", "standard_log_entry",
+				"standard_person", "user_access_levels", "file_access_levels"}; // perhaps outsource it further
+		// now that I think about it, it's not necessary to drop everything
+		// I can just drop files whose names I put in args
+		// I will need to use drop ... cascade, though
+		// 		checkforexistance already included anyway
+		
 		// connect to DB
 		ConnectToDatabase obj_ConnectDB = new ConnectToDatabase();
 		Connection connection = obj_ConnectDB.GetConnection();
-		try 
+		
+		try
 		{
-			// statements for dropping tables.
-			String user_access_levels = "DROP TABLE user_access_levels";
-			String file_access_levels = "DROP TABLE file_access_levels";
-			String standard_file = "DROP TABLE standard_file";
-			String accesses = "DROP TABLE accesses";
-			String standard_log_entry = "DROP TABLE standard_log_entry";
-			String standard_person = "DROP TABLE standard_person";
+			// not sure how to comment on that
 			Statement statement = connection.createStatement();
-			// executing those statements if those tables do exist.
-			if (CreateTables.CheckTableForExistence("user_access_levels", statement))
-				statement.executeUpdate(user_access_levels);
-			if (CreateTables.CheckTableForExistence("file_access_levels", statement))
-				statement.executeUpdate(file_access_levels);
-			if (CreateTables.CheckTableForExistence("standard_file", statement))
-				statement.executeUpdate(standard_file);
-			if (CreateTables.CheckTableForExistence("accesses", statement))
-				statement.executeUpdate(accesses);
-			if (CreateTables.CheckTableForExistence("standard_log_entry", statement))
-				statement.executeUpdate(standard_log_entry);
-			if (CreateTables.CheckTableForExistence("standard_person", statement))
-				statement.executeUpdate(standard_person);
+			for (String currentTable : tableNamesInDeletionOrder)
+				if (CreateTables.CheckTableForExistence(currentTable, statement))
+					statement.executeUpdate("DROP TABLE " + currentTable + ";");
+			// perhaps drop ... cascade is in order
+			// since database's tables can be changed
 			System.out.println("Tables do not exist now");
 		}
 		catch (Exception e) 
@@ -297,129 +281,76 @@ public class DropTables
 
 
 
+
 package trying_db2;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.sql.SQLException;
-import java.io.File;  // Import the File class
-import java.io.FileNotFoundException;  // Import this class to handle errors
-import java.util.Scanner; // Import the Scanner class to read text files
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
 
 // table information is used
-// "check" will be code word
+// can I use empty query?
+// should tables be named entry or entries, file or files... ?
 
 public class CreateTables 
 {
 	public static void main(String[] args)
 	{
+		final String codeWord = "CheckTableForExistence"; // perhaps not final, but
+		final String relativePathToFile = "src\\trying_db2\\tableInformation.txt"; // some other word?
+		
 		// connect to DB
 		ConnectToDatabase obj_ConnectDB = new ConnectToDatabase();
 		Connection connection = obj_ConnectDB.GetConnection();
-		
-		// getting information about tables from file
 		try 
-		{
-			File fileObj = new File("tableInformation.txt");
+		{	
+			File fileObj = new File(relativePathToFile); // check if it exist
+			// if it doesn't, return error message through 'return' command
 			Scanner fileReader = new Scanner(fileObj);
+			boolean itExists = true;
+			String currentQuery = "";
+			
+			Statement statement = connection.createStatement();
+			// taking sql code from file in form and executing those 
+			// statements if those tables they interact with do not exist
 			while (fileReader.hasNextLine()) 
 			{
 				String data = fileReader.nextLine();
+				if (data.contains(codeWord))
+				{
+					if (!itExists) statement.executeUpdate(currentQuery);
+						//System.out.println(currentQuery);
+					String[] resultOfSplit = data.split(" ", 2); // in theory, it is just two parts
+					// check for mistakes here
+					itExists = CheckTableForExistence(resultOfSplit[1], statement);
+					currentQuery = "";
+				} else
+					if (!itExists) currentQuery += data;
+				// check for mistakes
 			}
+			if (!itExists) 
+				//System.out.println(currentQuery);
+				statement.executeUpdate(currentQuery);
+
 			fileReader.close();
-		} catch (FileNotFoundException e) 
+			System.out.println("Tables exist now"); //
+		} catch (FileNotFoundException e)
 		{
-			System.out.println("An error occurred.");
 			e.printStackTrace();
-		}
-		try 
-		{
-			// statements for creating tables.
-			String user_access_levels = "CREATE TABLE user_access_levels (\r\n"
-					+ "access_level SMALLINT NOT NULL PRIMARY KEY,\r\n"
-					+ "access_level_name VARCHAR(20) NOT NULL, \r\n"
-					+ "access_level_description VARCHAR(50) NOT NULL)";
-			String user_access_levels_0 = "INSERT INTO user_access_levels \r\n" // can this INSERT INTO be outsourced?
-					+ "(access_level, access_level_name, access_level_description) VALUES ";
-			// how to make sure there's only one admin? There or in disk itself?
-			String user_access_levels_1 = "(1, 'admin', 'Can do everything')";
-			String user_access_levels_2 = "(0, 'regular user', 'Regular, rights are regulated')";
-			String file_access_levels = "CREATE TABLE file_access_levels (\r\n"
-					+ "access_level SMALLINT NOT NULL PRIMARY KEY, \r\n"
-					+ "access_level_name VARCHAR(20) NOT NULL, \r\n"
-					+ "access_level_description VARCHAR(50) NOT NULL)";
-			String file_access_levels_0 = "INSERT INTO file_access_levels \r\n"
-					+ "(access_level, access_level_name, access_level_description) VALUES ";
-			String file_access_levels_1 = "(0, 'invisible', 'File is not visible for regular users')";
-			String file_access_levels_2 = "(1, 'read', 'Can be read')";
-			String file_access_levels_3 = "(2, 'write', 'Can be copied for modification')";
-			String file_access_levels_4 = "(3, 'all', 'You are admin for this file. No restrictions')";
-			String standard_person = "CREATE TABLE standard_person (\r\n"
-					+ "person_id BIGSERIAL NOT NULL PRIMARY KEY,\r\n"
-					+ "user_access_levels SMALLINT NOT NULL REFERENCES user_access_levels(access_level_name),\r\n"
-					+ "name VARCHAR(150),\r\n"
-					+ "email VARCHAR(80) UNIQUE,\r\n"
-					+ "login VARCHAR(80) NOT NULL UNIQUE,\r\n"
-					+ "password VARCHAR(40) NOT NULL)";
-			// check that password is not "qwerty"
-			String standard_log_entry = "CREATE TABLE standard_log_entry (\r\n"
-					+ "entry_id BIGSERIAL NOT NULL PRIMARY KEY,\r\n"
-					+ "entry_type VARCHAR(50) NOT NULL,\r\n"
-					// it would be to complicated to 
-					// create definitive table of log_types 
-					+ "message VARCHAR(300),\r\n"
-					+ "person_login BIGINT REFERENCES standard_person(login),\r\n"
-					+ "IP INET,\r\n"
-					+ "when_happened timestamp NOT NULL)";
-			// IP CIDR NOT NULL is necessary for security purposes, but we can't do that just yet
-			// INET or CIDR?
-			// or perhaps it is just necessary for log_type ~=~ "signIn"?
-			// can combo of path_to_fike and file_name be UNIQUE?
-			String standard_file = "CREATE TABLE standard_file (\r\n"
-					+ "id_of_file BIGSERIAL NOT NULL PRIMARY KEY,\r\n"
-					+ "path_to_file VARCHAR(150) NOT NULL,\r\n"
-					+ "file_name VARCHAR(150) NOT NULL,\r\n"
-					+ "general_file_access_level smallint NOT NULL,\r\n"
-					+ "creator_id BIGINT REFERENCES standard_person(person_id) )";
-			// can combo of all id's be unique
-			String accesses = "CREATE TABLE accesses (\r\n"
-					+ "access_id BIGSERIAL NOT NULL PRIMARY KEY,\r\n"
-					+ "id_of_file BIGINT NOT NULL REFERENCES standard_file(id_of_file),\r\n"
-					+ "person_id BIGINT NOT NULL REFERENCES standard_person(person_id),\r\n"
-					+ "file_access_level smallint NOT NULL);";
-			Statement statement = connection.createStatement();
-			// executing those statements if those tables do not exist.
-			if (!CheckTableForExistence("user_access_levels", statement))
-			{
-				statement.executeUpdate(user_access_levels);
-				statement.executeUpdate(user_access_levels_0 + user_access_levels_1);
-				statement.executeUpdate(user_access_levels_0 + user_access_levels_2);
-			}
-			if (!CheckTableForExistence("file_access_levels", statement))
-			{
-				statement.executeUpdate(file_access_levels);
-				statement.executeUpdate(file_access_levels_0 + file_access_levels_1);
-				statement.executeUpdate(file_access_levels_0 + file_access_levels_2);
-				statement.executeUpdate(file_access_levels_0 + file_access_levels_3);
-				statement.executeUpdate(file_access_levels_0 + file_access_levels_4);
-			}
-			if (!CheckTableForExistence("standard_person", statement))
-				statement.executeUpdate(standard_person);
-			if (!CheckTableForExistence("standard_log_entry", statement))
-				statement.executeUpdate(standard_log_entry);
-			if (!CheckTableForExistence("standard_file", statement))
-				statement.executeUpdate(standard_file);
-			if (!CheckTableForExistence("accesses", statement))
-				statement.executeUpdate(accesses);
-			System.out.println("Tables exist now");
-		}
-		catch (Exception e) 
+		} catch (Exception e) // is 'try' with two 'catch' possible in java? 
 		{
 			e.printStackTrace();
 		}
+
+		// it would be to complicated to create definitive table of log_types
+		// Is IP INET or CIDR?
 	}
 	
 	public static Boolean CheckTableForExistence(String tableName, Statement statement) throws SQLException
+	// perhaps move it somewhere?
 	{
 		// searching database for table
 		String check_query = "SELECT to_regclass('public." + tableName + "')";
@@ -444,9 +375,11 @@ List of problems and things to do:
 4. There are no checks for proper values.
 6. Still WIP, but it is a good thing. Hopeful.
 7. Database will be updated, so we will have to change it. 
-8. Commentaries are missing, too.
 9. Data insertion is all well and good, but what about data retrieval? 
 	9a. What about it?
+	9b. Make proper DatabaseSELECT that takes info from String[] args
+		and returns results not just in console.
+	9ba.Actually, console might be OK choice.
 10. How to bypass security?
 11. How to store file? // Today
 12. Log and password of every user - outsource it to safer place
@@ -469,11 +402,23 @@ List of problems and things to do:
 30. Add smth to interact with DatabaseINSERT
 31. Insertions are insufficiently tested.
 32. Create list of forbidden passwords.
+33. How to make sure there's only one admin? There or in disk itself?
+34. Need to check that password is not "qwerty".
+	34a. Perhaps create a table of undesirable passwords?
+35. IP is necessary for security purposes, but we can't do that just yet
+	35a. Or perhaps it is just necessary for log_type ~=~ "signIn"?
+36. ? Code documentation.
 
+Things to do:
+// does user with pass and log
+// adding new user with log and pass with protection agains collisions 
+// deletion?
+// connect to db
+// Java db interface
 
-
-
-3. Create_table is not regulated. FIXED - now there's checks, if not balances
-5. Insertions are half-finished. FIXED
-14. Log rename to entry FIXED
-27. How to delete tables?	FIXED, I have created an method
+Solved:
+3. Create_table is not regulated. FIXED - now there's checks, if not balances 11.11.20
+5. Insertions are half-finished. FIXED 11.11.20
+8. Commentaries are missing, too. FIXED - added some 11.11.20
+14. Log rename to entry FIXED 11.11.20
+27. How to delete tables?	FIXED, I have created an method 11.11.20

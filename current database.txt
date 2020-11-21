@@ -10,58 +10,64 @@ psql
 \d - tables
 \l  - databases
 
+
 CREATE TABLE user_access_levels (
-access_level SMALLINT NOT NULL PRIMARY KEY,
-access_level_name VARCHAR(20) NOT NULL, 
+access_level SMALLINT NOT NULL PRIMARY KEY, 
+access_level_name VARCHAR(20) NOT NULL UNIQUE, 
 access_level_description VARCHAR(50) NOT NULL
 );
-INSERT INTO user_access_levels (access_level, access_level_name, access_level_description) VALUES
+INSERT INTO user_access_levels (access_level, access_level_name, access_level_description) VALUES 
 (1, 'admin', 'Can do everything');
-INSERT INTO user_access_levels (access_level, access_level_name, access_level_description) VALUES
+INSERT INTO user_access_levels (access_level, access_level_name, access_level_description) VALUES 
 (0, 'regular user', 'Regular, rights are regulated');
+
 CREATE TABLE file_access_levels (
-access_level SMALLINT NOT NULL PRIMARY KEY,
-access_level_name VARCHAR(20) NOT NULL,
+access_level SMALLINT NOT NULL PRIMARY KEY, 
+access_level_name VARCHAR(20) NOT NULL UNIQUE, 
 access_level_description VARCHAR(50) NOT NULL
 );
-INSERT INTO file_access_levels (access_level, access_level_name, access_level_description) VALUES
+INSERT INTO file_access_levels (access_level, access_level_name, access_level_description) VALUES 
 (0, 'invisible', 'File is not visible for regular users');
-INSERT INTO file_access_levels (access_level, access_level_name, access_level_description) VALUES
+INSERT INTO file_access_levels (access_level, access_level_name, access_level_description) VALUES 
 (1, 'read', 'Can be read');
-INSERT INTO file_access_levels (access_level, access_level_name, access_level_description) VALUES
+INSERT INTO file_access_levels (access_level, access_level_name, access_level_description) VALUES 
 (2, 'write', 'Can be copied for modification');
-INSERT INTO file_access_levels (access_level, access_level_name, access_level_description) VALUES
+INSERT INTO file_access_levels (access_level, access_level_name, access_level_description) VALUES 
 (3, 'all', 'You are admin for this file. No restrictions');
+
 CREATE TABLE standard_person (
-person_id BIGSERIAL NOT NULL PRIMARY KEY,
-user_access_levels SMALLINT NOT NULL REFERENCES user_access_levels(access_level_name),
-name VARCHAR(150),
-email VARCHAR(80) UNIQUE,
-login VARCHAR(80) NOT NULL UNIQUE,
+person_id BIGSERIAL NOT NULL PRIMARY KEY, 
+person_access_level VARCHAR(20) NOT NULL REFERENCES user_access_levels(access_level_name),  
+name VARCHAR(150), 
+email VARCHAR(80) UNIQUE, 
+login VARCHAR(80) NOT NULL UNIQUE, 
 password VARCHAR(40) NOT NULL
 );
+
 CREATE TABLE standard_log_entry (
-entry_id BIGSERIAL NOT NULL PRIMARY KEY,
-entry_type VARCHAR(50) NOT NULL,
-message VARCHAR(300),
-person_login BIGINT REFERENCES standard_person(login),
-IP INET,
-when_happened timestamp NOT NULL
+entry_id BIGSERIAL NOT NULL PRIMARY KEY, 
+entry_type VARCHAR(50) NOT NULL, 
+message VARCHAR(300), 
+person_login VARCHAR(80) REFERENCES standard_person(login), 
+IP INET, 
+when_happened TIMESTAMP NOT NULL
 );
+
 CREATE TABLE standard_file (
-id_of_file BIGSERIAL NOT NULL PRIMARY KEY,
-path_to_file VARCHAR(150) NOT NULL,
-file_name VARCHAR(150) NOT NULL,
-general_file_access_level smallint NOT NULL,
-creator_id BIGINT REFERENCES standard_person(person_id)
+id_of_file BIGSERIAL NOT NULL PRIMARY KEY, 
+path_to_file VARCHAR(150) NOT NULL, 
+file_name VARCHAR(150) NOT NULL, 
+general_file_access_level VARCHAR(20) NOT NULL REFERENCES file_access_levels(access_level_name), 
+creator_login VARCHAR(8) REFERENCES standard_person(login),
+UNIQUE (path_to_file, file_name)
 );
+
 CREATE TABLE accesses (
 access_id BIGSERIAL NOT NULL PRIMARY KEY,
-id_of_file BIGINT NOT NULL REFERENCES standard_file(id_of_file),
-person_id BIGINT NOT NULL REFERENCES standard_person(person_id),
-file_access_level smallint NOT NULL
+path_to_file VARCHAR(150) NOT NULL,
+file_name VARCHAR(150) NOT NULL,
+person_login VARCHAR(80) NOT NULL REFERENCES standard_person(login),
+file_access_level VARCHAR(80) NOT NULL REFERENCES file_access_levels(access_level_name),
+FOREIGN KEY (file_name, path_to_file) REFERENCES standard_file(path_to_file, file_name),
+UNIQUE (path_to_file, file_name, person_login)
 );
-
-
-
-
