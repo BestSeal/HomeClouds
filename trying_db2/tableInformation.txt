@@ -38,7 +38,7 @@ entry_type VARCHAR(50) NOT NULL,
 message VARCHAR(300), 
 person_login VARCHAR(80) REFERENCES standard_person(login), 
 IP INET, 
-when_happened TIMESTAMP NOT NULL
+when_happened TIMESTAMP DEFAULT LOCALTIMESTAMP
 );
 CheckTableForExistence standard_file 
 CREATE TABLE standard_file (

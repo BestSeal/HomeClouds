@@ -13,6 +13,7 @@ public class DropTables
 {	
 	public static void DropAllTables()
 	{
+		// DROPping tables doesn't drop sequences, so id =3, 6,... is the result
 		// can be automated (find out all tables, for ... Cascade) 
 		// 
 		String[] tableNamesInDeletionOrder = {"accesses", "standard_file", "standard_log_entry",

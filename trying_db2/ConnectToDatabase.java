@@ -24,10 +24,12 @@ public class ConnectToDatabase
 			// trying to connect
 			connection = DriverManager.getConnection(curDatabase, user, password);
 			// throw this out in the future 
+			/*
 			if (connection != null) 
 				System.out.println("Connection successful");
 			else 
 				System.out.println("Connection failed");
+			*/ // will likely need it after merge
 		}
 		catch (ClassNotFoundException | SQLException e) 
 		{

@@ -8,20 +8,6 @@ import java.sql.SQLException;
 
 public class CheckPerson 
 {
-	public static void main(String[] args) 
-	{
-		// just function for simplicity. Should be thrown out when included in bigger project
-		// or included in Test Class
-		try 
-		{
-			int i = CheckPersonForExistence("guest2", "augustine");
-			System.out.println(i);
-		}
-		catch (SQLException e)
-		{
-			e.printStackTrace();
-		}
-	}
 	
 	public static int CheckPersonForExistence(String login, String password) throws SQLException
 	{

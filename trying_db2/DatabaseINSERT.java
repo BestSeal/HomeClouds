@@ -23,21 +23,27 @@ public class DatabaseINSERT
 		DatabaseFunction.statementExecuteUpdate(connection, INSERTQuery);
 	}
 	
-	public static void InsertLogEntry(String entry_type, String message, String person_login, String IP, String when_happened)
+	public static void InsertLogEntry(String entry_type, String message, String person_login, String IP)
 	// can String house message VARCHAR(300) and others simultaneously 
 	// message,	person_login, IP can be empty strings
+	// in timestamp 'SELECT NOW();' can be used
 	{
 		Connection connection = ConnectToDatabase.GetConnection(); 
-		String INSERTQuery = "INSERT INTO standard_log_entry(entry_type, message, person_login, IP, when_happened) VALUES(";
+		String INSERTQuery = "INSERT INTO standard_log_entry(entry_type, message, person_login, IP) VALUES(";
 		// what are restrictions on IP? 
 		INSERTQuery += FrameStr(entry_type) + com
-				+ FrameStr(message) + com + FrameStr(person_login) + com 
-				+ FrameStr(IP) + com + FrameStr(when_happened) + ")"; 
+				+ FrameStr(message) + com + FrameStr(person_login) + com;
+		if (IP == "")
+			INSERTQuery += " null)";
+		else 
+			INSERTQuery += FrameStr(IP) + ")"; 
 		DatabaseFunction.statementExecuteUpdate(connection, INSERTQuery);
 	}
 
 	public static void InsertFile(String path_to_file, String file_name, String general_file_access_level, String creator_login)
 	{
+		// adding \ or '\' might create problem (in path)
+		// / is fine?
 		Connection connection = ConnectToDatabase.GetConnection(); 
 		String INSERTQuery = "INSERT INTO standard_file(path_to_file, file_name, general_file_access_level, creator_login) VALUES(";
 		INSERTQuery += FrameStr(path_to_file) + com
@@ -47,6 +53,7 @@ public class DatabaseINSERT
 	}
 	
 	public static void InsertAccess(String path_to_file, String file_name, String person_login, String file_access_level)
+	// DOES NOT WORK
 	{
 		Connection connection = ConnectToDatabase.GetConnection(); 
 		String INSERTQuery = "INSERT INTO standard_file(path_to_file, file_name, person_login, file_access_level) VALUES(";
