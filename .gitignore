@@ -21,3 +21,11 @@
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+mavenproject1/nb-configuration.xml
+mavenproject1/nb-configuration.xml
+mavenproject1/target/classes/.netbeans_automatic_build
+mavenproject1/target/maven-archiver/pom.properties
+mavenproject1/target/classes/.netbeans_automatic_build
+mavenproject1/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst
+mavenproject1/target/test-classes/.netbeans_automatic_build
+mavenproject1/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst
