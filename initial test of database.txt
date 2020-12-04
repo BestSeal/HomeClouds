@@ -1,0 +1,43 @@
+INITIAL TEST
+
+CREATE DATABASE name
+\c firstdatabase - connect
+DROP DATABASE firstdatabase
+
+test=# CREATE TABLE person (
+test(# id int,
+test(# first_name VARCHAR(50),
+test(# last_name VARCHAR(50),
+test(# gender VARCHAR(6),
+test(# date_of_birth DATE );
+\d
+\l
+\d person
+DROP TABLE person;
+
+CREATE TABLE person (
+id BIGSERIAL NOT NULL PRIMARY KEY,
+first_name VARCHAR(50) NOT NULL,
+last_name VARCHAR(50) NOT NULL,
+gender VARCHAR(6) NOT NULL,
+date_of_birth DATE NOT NULL,
+email VARCHAR(150) );
+
+INSERT INTO person (
+first_name,
+last_name,
+gender,
+date_of_birth)
+VALUES ('Anne', 'Smith', 'FEMALE', DATE '1988-01-09');
+
+INSERT INTO person (
+first_name,
+last_name,
+gender,
+date_of_birth)
+VALUES ('Jake', 'Somebody', 'MALE', DATE '1993-01-09');
+
+
+SELECT * FROM person;
+
+https://www.mockaroo.com/ - can help you
