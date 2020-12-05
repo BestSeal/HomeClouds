@@ -16,6 +16,8 @@ public class TestDatabase
 			int i = CheckPerson.CheckPersonForExistence("guest2", "augustine");
 			System.out.println("guest2 exist in id = " + i);
 			// JUST REMOVE COMMENTS, BUT INSERTING SAME THING TWICE WILL LEAD TO ERRORS
+			// SO PUT THEM BACK AGAIN AFTERWARDS
+			
 			//DatabaseINSERT.InsertPerson("admin", "ADMIN", "fSgerds@gmail.com", "Adomin", "complicatedobviously");
 			//DatabaseINSERT.InsertPerson("regular user", "alexander", "fesfrrge@mail.ru", "gsreht", "querty");
 			//DatabaseINSERT.InsertLogEntry("login", "user admin logged in", "Adomin", "");

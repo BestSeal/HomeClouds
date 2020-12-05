@@ -43,6 +43,7 @@ public class CreateTables
 			if (!itExists) 
 				DatabaseFunction.statementExecuteUpdate(connection, currentQuery);
 			fileReader.close();
+			connection.close();
 			System.out.println("Tables exist now"); //
 		}
 		catch (FileNotFoundException | SQLException e)

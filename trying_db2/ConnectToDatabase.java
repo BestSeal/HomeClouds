@@ -8,13 +8,13 @@ import java.sql.SQLException;
 public class ConnectToDatabase 
 {
 	// yet it's kinda expensive to connect every time
-
+	
 	public static Connection GetConnection() // add throws exception instead of try?
 	{
 		final String curDatabase = "jdbc:postgresql://localhost:5432/postgres"; // database data 
 		// will it also be localhost in the final version? 
 		final String user = "postgres"; // user data
-		final String password = "elju200postgre"; // user data
+		final String password = "elju200postgre"; // "";// user data
 		// PASSWORD IS DIFFERENT IN DISC DATABASE
 
 		Connection connection = null;
@@ -31,10 +31,17 @@ public class ConnectToDatabase
 				System.out.println("Connection failed");
 			*/ // will likely need it after merge
 		}
-		catch (ClassNotFoundException | SQLException e) 
+		catch (SQLException e) 
 		{
 			e.printStackTrace();
+			//e.getErrorCode( );
+			//e.getMessage( );
+			//e.getSQLState( );
 		}
-		return connection;
+		catch (ClassNotFoundException e)		//
+		{
+			
+		}
+		return connection; // Is it original? Or is original left unclosed?
 	}
 }

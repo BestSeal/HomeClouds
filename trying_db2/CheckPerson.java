@@ -18,10 +18,19 @@ public class CheckPerson
 		Connection connection = ConnectToDatabase.GetConnection();
 		ResultSet rs = DatabaseFunction.statementExecuteQuery(connection, check_query);
 		rs.next();
-		if (rs.getRow() == 1) 
-			return Integer.parseInt(rs.getString(1)); // it does exist
-		else // getRow() gives 0 after next(), meaning that there's 0 rows in sum
+		if (rs.getRow() == 1)
+		{
+			int i = Integer.parseInt(rs.getString(1));
+			rs.close();
+			connection.close();
+			return i;  // it does exist
+		}
+		else 
+		{	// getRow() gives 0 after next(), meaning that there's 0 rows in sum
+			rs.close();
+			connection.close();
 			return 0; // it doesn't exist
+		}
 		// rs.getRow() can't be > 1, since database has UNIQUE condition for login
 	}
 }
