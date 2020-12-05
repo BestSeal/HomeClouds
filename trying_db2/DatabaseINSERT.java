@@ -1,7 +1,7 @@
 package trying_db2;
 
 import java.sql.Connection;
-
+import java.sql.SQLException;
 // class for insertion into database
 
 // table information is used
@@ -21,6 +21,14 @@ public class DatabaseINSERT
 				+ FrameStr(name) + com + FrameStr(email) + com 
 				+ FrameStr(login) + com + FrameStr(password) + ")";
 		DatabaseFunction.statementExecuteUpdate(connection, INSERTQuery);
+		try
+		{
+			connection.close();
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
 	}
 	
 	public static void InsertLogEntry(String entry_type, String message, String person_login, String IP)
@@ -38,6 +46,14 @@ public class DatabaseINSERT
 		else 
 			INSERTQuery += FrameStr(IP) + ")"; 
 		DatabaseFunction.statementExecuteUpdate(connection, INSERTQuery);
+		try
+		{
+			connection.close();
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	public static void InsertFile(String path_to_file, String file_name, String general_file_access_level, String creator_login)
@@ -50,6 +66,14 @@ public class DatabaseINSERT
 				+ FrameStr(file_name) + com + FrameStr(general_file_access_level) + com 
 				+ FrameStr(creator_login) + ")"; 
 		DatabaseFunction.statementExecuteUpdate(connection, INSERTQuery);
+		try
+		{
+			connection.close();
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
 	}
 	
 	public static void InsertAccess(String path_to_file, String file_name, String person_login, String file_access_level)
@@ -61,6 +85,14 @@ public class DatabaseINSERT
 				+ FrameStr(file_name) + com + FrameStr(person_login) + com 
 				+ FrameStr(file_access_level) + ")"; 
 		DatabaseFunction.statementExecuteUpdate(connection, INSERTQuery);
+		try
+		{
+			connection.close();
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
 	}
 	
 	public static String FrameStr(String stringToAdapt)

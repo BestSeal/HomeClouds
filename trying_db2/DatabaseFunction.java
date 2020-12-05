@@ -17,10 +17,12 @@ public class DatabaseFunction
 		rs.next();
 	    if (rs.getString(1) == null)
 		{
+	    	//rs.close();
 			return false; // it doesn't exist
 		}
 		else
 		{
+			//rs.close();
 			return true; // it does exist
 		}
 	}
@@ -35,6 +37,7 @@ public class DatabaseFunction
 			// add checks
 			// and try to break it
 			statement.executeUpdate(query);
+			statement.close(); // am I sure it's no longer necessary?
 		}
 		catch (SQLException e)
 		{
@@ -52,13 +55,17 @@ public class DatabaseFunction
 			// add checks
 			// and try to break it
 			rs = statement.executeQuery(query);
+			//rs.close();
+			statement.close();
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
+			//e.printStackTrace();			//
 		}
-		return rs;
+		return rs; // there's a function of ResultSet for returning statement that created it
 		// how do I work with errors?
 	}
-		
+	
+	// if adding connection in function actually links it (CHECK) then I can
+	// create function closeConnection with try...catch block inside
 }

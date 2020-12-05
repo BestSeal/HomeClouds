@@ -32,6 +32,7 @@ public class DropTables
 				if (DatabaseFunction.CheckTableForExistence(currentTable, connection))
 					DatabaseFunction.statementExecuteUpdate(connection, "DROP TABLE " + currentTable + ";");
 			System.out.println("Tables do not exist now");
+			connection.close();
 		}
 		catch (Exception e) 
 		{

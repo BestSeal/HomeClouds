@@ -1,7 +1,9 @@
 package trying_db2;
 
-import java.sql.SQLException;
+import java.sql.SQLException; // possibly needed
+import java.sql.Connection;
 
+// is it org.postgresql.util.PSQLException
 public class TestDatabase 
 {
 	public static void main(String[] args) 
@@ -10,25 +12,29 @@ public class TestDatabase
 		// or included in Test Class
 		try 
 		{
-			//DropTables.DropAllTables();
-			//CreateTables.CreateAllTables();
+			CreateTables.CreateAllTables();
 			int i = CheckPerson.CheckPersonForExistence("guest2", "augustine");
-			//System.out.println("guest2 existt in id = " + i);
+			System.out.println("guest2 exist in id = " + i);
+			// JUST REMOVE COMMENTS, BUT INSERTING SAME THING TWICE WILL LEAD TO ERRORS
+			// SO PUT THEM BACK AGAIN AFTERWARDS
+			
 			//DatabaseINSERT.InsertPerson("admin", "ADMIN", "fSgerds@gmail.com", "Adomin", "complicatedobviously");
-			//i = CheckPerson.CheckPersonForExistence("Adomin", "complicatedobviously");
-			//System.out.println("Adomin existt in id = " + i);
 			//DatabaseINSERT.InsertPerson("regular user", "alexander", "fesfrrge@mail.ru", "gsreht", "querty");
 			//DatabaseINSERT.InsertLogEntry("login", "user admin logged in", "Adomin", "");
 			//DatabaseINSERT.InsertLogEntry("unknown", "", "gsreht", "");
 			//DatabaseINSERT.InsertFile("/evgeney/", "checking_file", "read", "Adomin");
 			//DatabaseINSERT.InsertFile("/evgeney/", "second", "write", "gsreht");
-			//DatabaseINSERT.InsertAccess("/evgeney/", "checking_file", "gsreht", "write"); // failure
+			String resultofss = DatabaseSELECT.SimpleSelect("SELECT * FROM standard_file");
+			System.out.println(resultofss);
+			
 		}
-		catch (SQLException e)
+		catch (Exception e)
 		{
 			e.printStackTrace();
+			//e.getErrorCode( );
+			//e.getMessage( );   			////
+			//e.getSQLState( );
 		}
-
 	}
-
+	
 }
