@@ -20,7 +20,7 @@ public class CheckPerson
 		if (rs.getRow() == 1)
 		{
 			int i = Integer.parseInt(rs.getString(1));
-			rs.close();
+			rs.close(); connection.close();
 			return i;  // it does exist
 		}
 		else 
