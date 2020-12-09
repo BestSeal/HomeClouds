@@ -12,9 +12,23 @@ public class TestDatabase
 		// or included in Test Class
 		try 
 		{
-			CreateTables.CreateAllTables();
-			int i = CheckPerson.CheckPersonForExistence("guest2", "augustine");
-			System.out.println("guest2 exist in id = " + i);
+			Connection con = ConnectToDatabase.GetConnection();
+			System.out.println(con.toString());
+			closeConnection(con);
+			if (con == null)
+				System.out.println("con = null");
+			if (con.isClosed())
+				System.out.println("con is closed");
+			//System.out.println(con.toString());
+			con.close();
+			con = null;
+			if (con == null)
+				System.out.println("con = null after");
+			//System.out.println(con.toString());
+
+			//CreateTables.CreateAllTables(con);
+			//int i = CheckPerson.CheckPersonForExistence("guest2", "augustine");
+			//System.out.println("guest2 exist in id = " + i);
 			// JUST REMOVE COMMENTS, BUT INSERTING SAME THING TWICE WILL LEAD TO ERRORS
 			// SO PUT THEM BACK AGAIN AFTERWARDS
 			
@@ -24,8 +38,10 @@ public class TestDatabase
 			//DatabaseINSERT.InsertLogEntry("unknown", "", "gsreht", "");
 			//DatabaseINSERT.InsertFile("/evgeney/", "checking_file", "read", "Adomin");
 			//DatabaseINSERT.InsertFile("/evgeney/", "second", "write", "gsreht");
-			String resultofss = DatabaseSELECT.SimpleSelect("SELECT * FROM standard_file");
-			System.out.println(resultofss);
+			//String resultofss = DatabaseSELECT.SimpleSelect("SELECT * FROM standard_file");
+			//System.out.println(resultofss);
+			
+			// check if connection-sharing gives two connections, or one
 			
 		}
 		catch (Exception e)
@@ -36,5 +52,17 @@ public class TestDatabase
 			//e.getSQLState( );
 		}
 	}
-	
+	public static void closeConnection(Connection connection) throws SQLException
+	{
+		//System.out.println(connection.toString());
+		connection.close(); connection = null;
+		//System.out.println(connection.toString());
+	}
 }
+
+/*
+//e.printStackTrace();
+//System.out.println(e.getLocalizedMessage()); // identical
+//System.out.println(e.getMessage()); // identical
+// e.notify() - what is it
+*/

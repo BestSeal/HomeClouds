@@ -17,51 +17,35 @@ public class DatabaseFunction
 		rs.next();
 	    if (rs.getString(1) == null)
 		{
-	    	//rs.close();
+	    	rs.close();
 			return false; // it doesn't exist
 		}
 		else
 		{
-			//rs.close();
+			rs.close();		// why have I // it
 			return true; // it does exist
 		}
 	}
 	
-	public static void statementExecuteUpdate(Connection connection, String query)
+	public static void statementExecuteUpdate(Connection connection, String query) throws SQLException
 	{
 		// creating statement here every time is expensive
 		// and doing it outside just takes too many lines
-		try
-		{
-			Statement statement = connection.createStatement();
-			// add checks
-			// and try to break it
-			statement.executeUpdate(query);
-			statement.close(); // am I sure it's no longer necessary?
-		}
-		catch (SQLException e)
-		{
-			e.printStackTrace();
-		}
+		Statement statement = connection.createStatement();
+		// add checks, and try to break it
+		statement.executeUpdate(query);
+		statement.close(); // am I sure it's no longer necessary?
 		// how do I work with errors?
 	}
 	
-	public static ResultSet statementExecuteQuery(Connection connection, String query)
+	public static ResultSet statementExecuteQuery(Connection connection, String query) throws SQLException
 	{
 		ResultSet rs = null;
-		try
-		{
-			Statement statement = connection.createStatement();
-			// add checks
-			// and try to break it
-			rs = statement.executeQuery(query);
-			//rs.close();
-			statement.close();
-		}
-		catch (SQLException e)
-		{
-			//e.printStackTrace();			//
-		}
+		Statement statement = connection.createStatement();
+		// add checks, and try to break it
+		rs = statement.executeQuery(query);
+		//rs.close();
+		statement.close();
 		return rs; // there's a function of ResultSet for returning statement that created it
 		// how do I work with errors?
 	}
