@@ -1,6 +1,7 @@
 package trying_db2;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 
 // class for deleting all table information from database
 
@@ -11,7 +12,7 @@ import java.sql.Connection;
 
 public class DropTables 
 {	
-	public static void DropAllTables()
+	public static void DropAllTables(Connection connection) throws SQLException
 	{
 		// DROPping tables doesn't drop sequences, so id =3, 6,... is the result
 		// can be automated (find out all tables, for ... Cascade) 
@@ -22,21 +23,10 @@ public class DropTables
 		// I can just drop files whose names I put in args
 		// I will need to use drop ... cascade, though
 		// 		checkforexistance already included anyway
-		
-		// connect to DB
-		Connection connection = ConnectToDatabase.GetConnection();		
-		try
-		{
-			// not sure how to comment on that
-			for (String currentTable : tableNamesInDeletionOrder)
-				if (DatabaseFunction.CheckTableForExistence(currentTable, connection))
-					DatabaseFunction.statementExecuteUpdate(connection, "DROP TABLE " + currentTable + ";");
-			System.out.println("Tables do not exist now");
-			connection.close();
-		}
-		catch (Exception e) 
-		{
-			e.printStackTrace();
-		}
+		// not sure how to comment on that
+		for (String currentTable : tableNamesInDeletionOrder)
+			if (DatabaseFunction.CheckTableForExistence(currentTable, connection))
+				DatabaseFunction.statementExecuteUpdate(connection, "DROP TABLE " + currentTable + ";");
+		System.out.println("Tables do not exist now");
 	}
 }
