@@ -12,18 +12,18 @@ public class TestDatabase
 		// or included in Test Class
 		try 
 		{
-			Connection con = ConnectToDatabase.GetConnection();
-			System.out.println(con.toString());
-			closeConnection(con);
-			if (con == null)
-				System.out.println("con = null");
-			if (con.isClosed())
-				System.out.println("con is closed");
+			//Connection con = ConnectToDatabase.GetConnection();
 			//System.out.println(con.toString());
-			con.close();
-			con = null;
-			if (con == null)
-				System.out.println("con = null after");
+			//closeConnection(con);
+			//if (con == null)
+				//System.out.println("con = null");
+			//if (con.isClosed())
+				//System.out.println("con is closed");
+			//System.out.println(con.toString());
+			//con.close();
+			//con = null;
+			//if (con == null)
+				//System.out.println("con = null after");
 			//System.out.println(con.toString());
 
 			//CreateTables.CreateAllTables(con);
@@ -51,12 +51,6 @@ public class TestDatabase
 			//e.getMessage( );   			////
 			//e.getSQLState( );
 		}
-	}
-	public static void closeConnection(Connection connection) throws SQLException
-	{
-		//System.out.println(connection.toString());
-		connection.close(); connection = null;
-		//System.out.println(connection.toString());
 	}
 }
 
