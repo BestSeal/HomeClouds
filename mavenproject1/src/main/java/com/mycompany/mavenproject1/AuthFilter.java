@@ -71,11 +71,11 @@ public class AuthFilter implements Filter {
     {
         if (status == 1)
         {
-            req.getRequestDispatcher("/WEB-INF/p/").forward(req, res);
+            req.getRequestDispatcher("/WEB-INF/p/user_page.jsp").forward(req, res);
         }
         else
         {
-            req.getRequestDispatcher("/WEB-INF/register/").forward(req, res);
+            req.getRequestDispatcher("/WEB-INF/auth").forward(req, res);
         }
     }
 

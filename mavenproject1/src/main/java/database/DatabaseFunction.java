@@ -26,7 +26,7 @@ public class DatabaseFunction
 			return true; // it does exist
 		}
 	}
-	
+	//DO U NO DA WAE?!
 	public static void statementExecuteUpdate(Connection connection, String query) throws SQLException
 	{
 		// creating statement here every time is expensive

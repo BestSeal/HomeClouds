@@ -12,7 +12,7 @@ public class ConnectToDatabase
 	final static String curDatabase = "jdbc:postgresql://localhost:5432/postgres"; // database data 
 	// will it also be localhost in the final version? 
 	final static String user = "postgres"; // user data
-	final static String password = "elju200postgre"; // user data
+	final static String password = "123"; // user data
 	// PASSWORD IS DIFFERENT IN DISC DATABASE
 
 	public static Connection GetConnection() throws SQLException, ClassNotFoundException 
