@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-@WebServlet("/upload")
+@WebServlet("/p/upload")
 public class ServletTest extends HttpServlet {
 
    @Override

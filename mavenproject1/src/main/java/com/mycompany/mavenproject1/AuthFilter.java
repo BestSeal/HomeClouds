@@ -9,13 +9,14 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import static java.util.Objects.nonNull;
 import javax.servlet.http.*;
+import database.*;
 
 
 /**
  *
  * @author Ilya G
  */
-@WebFilter(urlPatterns = "/*")
+@WebFilter(urlPatterns = "/p/*")
 public class AuthFilter implements Filter {
     
     @Override
@@ -39,21 +40,42 @@ public class AuthFilter implements Filter {
     HttpSession session =  req.getSession();
            
     if(nonNull(session) && nonNull(session.getAttribute("login")) && nonNull(session.getAttribute("password"))){
-        int status = (int) session.getAttribute("role");
-        redirect(req, res, status);
+        try {
+            if (CheckPerson.CheckPersonForExistence(ConnectToDatabase.GetConnection(), (String) session.getAttribute("login"), (String) session.getAttribute("pass")) != 0)
+            {
+                redirect(req, res, 1); 
+            }
+        } catch (Exception e) {
+        }
+       
     }
+    else
+        try {                   
+             if (CheckPerson.CheckPersonForExistence(ConnectToDatabase.GetConnection(), login, (String) pass) != 0)
+            {
+                req.getSession().setAttribute("pass", pass);
+                req.getSession().setAttribute("login", login);
+                
+                redirect(req, res, 1);
+            }
+        }           
+        catch (Exception e) {
+            
+        }
 
-        redirect(req, res, 1);
+
+        redirect(req, res, 0);
     }
        
     private void redirect(HttpServletRequest req, HttpServletResponse res, int status) throws ServletException, IOException
     {
         if (status == 1)
         {
-            req.getRequestDispatcher("/WEB-INF/view/login_page.jsp").forward(req, res);
+            req.getRequestDispatcher("/WEB-INF/p/").forward(req, res);
         }
-        else 
+        else
         {
+            req.getRequestDispatcher("/WEB-INF/register/").forward(req, res);
         }
     }
 

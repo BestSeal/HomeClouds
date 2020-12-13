@@ -1,3 +1,12 @@
+database\CheckPerson.class
 com\mycompany\mavenproject1\AuthFilter.class
-com\mycompany\mavenproject1\ServletTest.class
+database\DatabaseINSERT.class
+database\DatabaseSELECT.class
+com\mycompany\mavenproject1\Register.class
+database\DatabaseFunction.class
+com\mycompany\mavenproject1\Auth.class
+database\CreateTables.class
+database\DropTables.class
 com\mycompany\mavenproject1\MainClass.class
+database\ConnectToDatabase.class
+com\mycompany\mavenproject1\ServletTest.class
