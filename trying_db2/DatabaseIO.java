@@ -3,8 +3,8 @@ package trying_db2;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData; // for rs.getMetaData()
-import java.sql.SQLException; // throws SQLException
+//import java.sql.ResultSetMetaData; // for rs.getMetaData()
+//import java.sql.SQLException; // throws SQLException
 import java.util.ArrayList;
 import java.util.List;
 
@@ -74,13 +74,23 @@ public class DatabaseIO
     		for (int i = 1; i <= columnsNumber; i++) 
     			selectList.add(rs.getString(i));
     	rs.close(); rs = null;
-    	// connection.close(); connection = null;
+    	// // connection.close(); connection = null;
     	return selectList;
     	// rsmd doesn't have 'close'
     	// check it for "org.postgresql.util.PSQLException: Запрос не вернул результатов." in the future?
     	// possible exception Cannot invoke "java.sql.ResultSet.getMetaData()" because "rs" is null
     	// results metadata, like column names and such
     } 
+	
+	public static List<String> personSelect(Connection connection, int id) throws SQLException
+	{
+		List<String> personInfo = new ArrayList<String>(); 
+		if (id == 0)
+			return personInfo;
+		String query = "SELECT * FROM standard_person WHERE person_id = " + id;
+		personInfo = simpleSelect(connection, query);
+		return personInfo;
+	}
 	
 	public static String frameStr(String stringToAdapt)
 	{

@@ -13,6 +13,7 @@ public class TestDatabase
 		{
 			Connection connection = ConnectToDatabase.GetConnection();
 
+			/*
 			String query = "SELECT * FROM standard_person";
 			List<String> people = DatabaseIO.simpleSelect(connection, query);
 			System.out.println(people);
@@ -20,6 +21,28 @@ public class TestDatabase
 			query = "SELECT * FROM standard_file";
 			List<String> files = DatabaseIO.simpleSelect(connection, query);
 			System.out.println(files);
+			*/
+			
+			String login, password; int id;
+			
+			login = "Adomin"; password = "complicatedobviously";
+			id = CheckPerson.CheckPersonForExistence(connection, login, password);
+			if (id == 0)
+				System.out.println("Person " + login + " not found");
+			else
+			{
+				System.out.println("Info about " + login);
+				for (String el : DatabaseIO.personSelect(connection, id))
+					System.out.println(el);
+			}
+			
+			System.out.println("\n");
+			login = "Modulator"; password = "qwerty1234";
+			id = CheckPerson.CheckPersonForExistence(connection, login, password);
+			if (id == 0)
+				System.out.println("Person " + login + " not found");
+			else System.out.println(DatabaseIO.personSelect(connection, id));
+			
 		}
 		catch (SQLException | ClassNotFoundException e)
 		{

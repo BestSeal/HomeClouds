@@ -17,12 +17,12 @@ public class DatabaseFunction
 		rs.next();
 	    if (rs.getString(1) == null)
 		{
-	    	rs.close();
+	    	rs.close(); rs = null;
 			return false; // it doesn't exist
 		}
 		else
 		{
-			rs.close();		// why have I // it
+			rs.close(); rs = null;		// why have I // it
 			return true; // it does exist
 		}
 	}
@@ -34,7 +34,7 @@ public class DatabaseFunction
 		Statement statement = connection.createStatement();
 		// add checks, and try to break it
 		statement.executeUpdate(query);
-		statement.close(); // am I sure it's no longer necessary?
+		statement.close(); statement = null; // am I sure it's no longer necessary?
 		// how do I work with errors?
 	}
 	
@@ -45,7 +45,7 @@ public class DatabaseFunction
 		// add checks, and try to break it
 		rs = statement.executeQuery(query);
 		//rs.close();
-		statement.close();
+		statement.close(); statement = null;
 		return rs; // there's a function of ResultSet for returning statement that created it
 		// how do I work with errors?
 	}
