@@ -8,6 +8,9 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
+
+// insert person, log entry, file, access (BROKE IT AGAIN), general select, and select person by id
+
 public class DatabaseIO 
 {
 	final public static String com = ", ";
@@ -35,7 +38,7 @@ public class DatabaseIO
 		if (IP == "")
 			INSERTQuery += " null)";
 		else
-			INSERTQuery += frameStr(IP) + ")";
+			INSERTQuery += frameStr(IP) + ")"; // NOT TESTED
 		DatabaseFunction.statementExecuteUpdate(connection, INSERTQuery);
 	}
 
@@ -83,6 +86,8 @@ public class DatabaseIO
     } 
 	
 	public static List<String> personSelect(Connection connection, int id) throws SQLException
+	// selects with password - for testing purposes mostly
+	// perhaps 'public' is not what I want from it
 	{
 		List<String> personInfo = new ArrayList<String>(); 
 		if (id == 0)
@@ -92,9 +97,22 @@ public class DatabaseIO
 		return personInfo;
 	}
 	
+	public static List<String> personSelectwoPass(Connection connection, int id) throws SQLException
+	// selects with password - for testing purposes mostly
+	{
+		List<String> personInfo = new ArrayList<String>(); 
+		if (id == 0)
+			return personInfo;
+		String query = "SELECT person_id, person_access_level, name, email, login"
+				+ "FROM standard_person WHERE person_id = " + id;
+		personInfo = simpleSelect(connection, query);
+		return personInfo;
+	}
+	
 	public static String frameStr(String stringToAdapt)
 	{
 		stringToAdapt = "'" + stringToAdapt + "'";
 		return stringToAdapt;
 	}
+	// created it twice. Need to simplify usage.
 }
