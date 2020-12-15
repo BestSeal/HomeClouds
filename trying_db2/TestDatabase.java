@@ -19,6 +19,21 @@ public class TestDatabase
 			// need to check deletion of all person info
 			
 			Connection connection = ConnectToDatabase.getConnection();
+			//DatabaseIO.insertPerson(connection, "regular user", "georgiy", "wefdsc@mail.ru", "anotherOne", "sefdsc");
+			//DatabaseIO.insertPerson(connection, "regular user", "Sergiy", "Radonegi@mail.ru", "wedfwefvgrds", "sefdsc");
+			/*
+			String login = "delete_it_Us";
+			System.out.println("Info about " + login);
+			for (String el : DatabaseIO.personSelect(connection, login))
+				System.out.println(el);
+			for (String elp : DatabaseIO.personSelectwoPass(connection, login))
+				System.out.println(elp);
+			*/
+			System.out.println("");
+			for (String logins : DatabaseIO.getAllLogins(connection))
+				System.out.println(logins);
+			
+			
 			//DatabaseTables.dropAllTables(connection);
 			//DatabaseTables.createAllTables(connection);
 			//DatabaseIO.insertPerson(connection, "regular user", "user_for_deletion",	"sfe@mail.ru", "delete_it_Useee", "querty");

@@ -31,13 +31,11 @@ public class DatabaseFunction
 		}
 	}
 	
-	public static int checkPersonForExistence(Connection connection, String login, String password) throws SQLException
+	public static int getPersonId(Connection connection, String login) throws SQLException
 	// checking database to see if certain person exists
 	{
 		// standard_person has UNIQUE condition on login and password
-		String check_query = "SELECT person_id FROM standard_person WHERE (login = '"
-				+ login + "' AND password = '"
-				+ password + "')";
+		String check_query = "SELECT person_id FROM standard_person WHERE login = " + frameStr(login);
 		ResultSet rs = DatabaseFunction.statementExecuteQuery(connection, check_query);
 		rs.next();
 		if (rs.getRow() == 1)
