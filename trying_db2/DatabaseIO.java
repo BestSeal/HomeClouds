@@ -18,13 +18,24 @@ public class DatabaseIO
 	public static void insertPerson(Connection connection, String person_access_level, String name, 
 			String email, String login, String password) throws SQLException
 	{
-		String INSERTQuery = "INSERT INTO standard_person(person_access_level, name, email, login, password) VALUES(";
 		// name and email can be empty string
 		// others can not
-		INSERTQuery += frameStr(person_access_level) + com
+		String INSERTQuery;
+		if (email != "")
+		{
+			INSERTQuery = "INSERT INTO standard_person(person_access_level, name, email, login, password) VALUES(";
+			INSERTQuery += frameStr(person_access_level) + com
 				+ frameStr(name) + com + frameStr(email) + com 
 				+ frameStr(login) + com + frameStr(password) + ")";
+		}
+		else
+		{
+			INSERTQuery = "INSERT INTO standard_person(person_access_level, name, login, password) VALUES(";
+			INSERTQuery += frameStr(person_access_level) + com
+				+ frameStr(name) + com + frameStr(login) + com + frameStr(password) + ")";
+		}
 		DatabaseFunction.statementExecuteUpdate(connection, INSERTQuery);
+		// if null string
 	}
 	
 	public static void insertLogEntry(Connection connection, String entry_type, String message,

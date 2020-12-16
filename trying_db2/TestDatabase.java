@@ -28,11 +28,14 @@ public class TestDatabase
 				System.out.println(el);
 			for (String elp : DatabaseIO.personSelectwoPass(connection, login))
 				System.out.println(elp);
-			*/
+			
 			System.out.println("");
 			for (String logins : DatabaseIO.getAllLogins(connection))
 				System.out.println(logins);
+			*/
 			
+			DatabaseIO.insertPerson(connection, "regular user", "Claudy", "", "Cl0dy3", "refdfa");
+			DatabaseIO.insertPerson(connection, "admin", "Zhenya", "", "Modulator2", "refdfa");
 			
 			//DatabaseTables.dropAllTables(connection);
 			//DatabaseTables.createAllTables(connection);
