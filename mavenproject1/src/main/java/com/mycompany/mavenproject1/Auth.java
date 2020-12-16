@@ -5,16 +5,17 @@
  */
 package com.mycompany.mavenproject1;
 
-import database.CheckPerson;
-import database.ConnectToDatabase;
-import database.DatabaseINSERT;
+
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashSet;
+import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import trying_db2.*;
 
 /**
  *
@@ -40,20 +41,29 @@ public class Auth extends HttpServlet {
         String pass = request.getParameter("pass");
         try {
             System.out.println("login");
-            if (CheckPerson.CheckPersonForExistence(ConnectToDatabase.GetConnection(), login, pass) != 0)
+            int userId = DatabaseFunction.getPersonId(ConnectToDatabase.getConnection(), login);
+            if (userId != 0)
             {
-                System.out.println(login + "logged in");
-                request.getSession().setAttribute("pass", pass);
-                request.getSession().setAttribute("login", login);
-                
-                getServletContext().getRequestDispatcher("/WEB-INF/p/user_page.jsp").forward(request, response);
-                
+                List<String> userInfo = DatabaseIO.personSelect(ConnectToDatabase.getConnection(), userId);
+                String userPass = userInfo.get(5);
+                System.out.println(pass + " " + userPass);
+                if (userPass.equals(pass))
+                {
+                    System.out.println(login + " logged in");
+                    request.getSession().setAttribute("pass", pass);
+                    request.getSession().setAttribute("login", login);
+                    request.getSession().setAttribute("userId", userId);
+                    request.getSession().setAttribute("name", userInfo.get(2));
+                    
+                    getServletContext().getRequestDispatcher("/WEB-INF/user/user_page.jsp").forward(request, response); 
+                }
             }
-            else 
+            else
             {
-                request.setAttribute("loginError", "wrong login/pass");
-                getServletContext().getRequestDispatcher("/WEB-INF/auth").forward(request, response);
+                request.setAttribute("loginError", "wrong login");
+                getServletContext().getRequestDispatcher("/WEB-INF/auth/login_page.jsp").forward(request, response);
             }
+            
 
         } catch (Exception e) {
             System.out.println(e);

@@ -12,7 +12,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import database.*;
+import trying_db2.*;
 
 /**
  *
@@ -36,14 +36,14 @@ public class Register extends HttpServlet {
             throws ServletException, IOException {
         String login = request.getParameter("login");
         String pass = request.getParameter("password");
-        String email = request.getParameter("emal");
+        String email = request.getParameter("email");
         String code = request.getParameter("code");
         String name = request.getParameter("name");
         try {
             System.out.println("register");
-            if (CheckPerson.CheckPersonForExistence(ConnectToDatabase.GetConnection(), login, pass) != 0)
+            if (DatabaseFunction.getPersonId(ConnectToDatabase.getConnection(), login) != 0)
             {
-                String error = "Такой пользователь уже зарегистрирован. Попробуйте авторизоваться.";
+                String error = "Такой пользователь уже зарегистрирован. Попробуйте <a href=\"register\">авторизоваться.</a>";
                 request.setAttribute("registerError", error);  
                 System.out.println("user exists");
                 getServletContext().getRequestDispatcher("/WEB-INF/register/register_page.jsp").forward(request, response);
@@ -51,11 +51,12 @@ public class Register extends HttpServlet {
             else
             {
                 if ("1234".equals(code))
-                    DatabaseINSERT.InsertPerson(ConnectToDatabase.GetConnection(), "admin", name, email, login, pass);
+                    DatabaseIO.insertPerson(ConnectToDatabase.getConnection(), "admin", name, email, login, pass);
                 else
-                    DatabaseINSERT.InsertPerson(ConnectToDatabase.GetConnection(), "standard user", name, email, login, pass);
+                    DatabaseIO.insertPerson(ConnectToDatabase.getConnection(), "regular user", name, email, login, pass);
                 System.out.println("new user " + login);
-                getServletContext().getRequestDispatcher("/WEB-INF/auth/login_page.jsp").forward(request, response);
+                request.setAttribute("loginError", "New user was registered, you can sign in now"); 
+                response.sendRedirect("/auth/");
             }
         } catch (Exception e) {
             System.out.println(e);

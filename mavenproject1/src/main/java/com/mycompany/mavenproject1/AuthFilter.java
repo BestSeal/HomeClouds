@@ -1,5 +1,6 @@
 package com.mycompany.mavenproject1;
 
+import support.User;
 import javax.servlet.*;
 import javax.servlet.Filter;
 import javax.servlet.annotation.WebFilter;
@@ -9,14 +10,14 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import static java.util.Objects.nonNull;
 import javax.servlet.http.*;
-import database.*;
-
+import trying_db2.*;
+import support.User.*;
 
 /**
  *
  * @author Ilya G
  */
-@WebFilter(urlPatterns = "/p/*")
+@WebFilter(urlPatterns = "/user/*")
 public class AuthFilter implements Filter {
     
     @Override
@@ -33,50 +34,38 @@ public class AuthFilter implements Filter {
 
             throws IOException, ServletException {
       
-    String login = request.getParameter("login");
-    String pass = request.getParameter("password"); //we shoud add encryption or hashing as pass is stored in the cookie
     HttpServletRequest req = (HttpServletRequest) request;
     HttpServletResponse res = (HttpServletResponse) response;
     HttpSession session =  req.getSession();
-           
-    if(nonNull(session) && nonNull(session.getAttribute("login")) && nonNull(session.getAttribute("password"))){
+    System.out.println("filter");
         try {
-            if (CheckPerson.CheckPersonForExistence(ConnectToDatabase.GetConnection(), (String) session.getAttribute("login"), (String) session.getAttribute("pass")) != 0)
-            {
-                redirect(req, res, 1); 
+            if (nonNull(session) && nonNull(session.getAttribute("login")) && nonNull(session.getAttribute("pass"))){
+                String login = (String) session.getAttribute("login");
+                String pass = (String) session.getAttribute("pass");
+                System.out.println(login);
+                if (User.validadeUser(login, pass))
+                {
+                    System.out.println(login + " in the session");
+                    req.getRequestDispatcher("/WEB-INF/user/user_page.jsp").forward(request, response); 
+                    return;
+                }
             }
         } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
-       
-    }
-    else
-        try {                   
-             if (CheckPerson.CheckPersonForExistence(ConnectToDatabase.GetConnection(), login, (String) pass) != 0)
-            {
-                req.getSession().setAttribute("pass", pass);
-                req.getSession().setAttribute("login", login);
-                
-                redirect(req, res, 1);
-            }
-        }           
-        catch (Exception e) {
-            
-        }
-
-
-        redirect(req, res, 0);
-    }
-       
-    private void redirect(HttpServletRequest req, HttpServletResponse res, int status) throws ServletException, IOException
+    System.out.println((String)req.getParameter("login") + " " + (String) req.getParameter("pass"));
+    if (User.validadeUser(req.getParameter("login"), req.getParameter("pass")))
     {
-        if (status == 1)
-        {
-            req.getRequestDispatcher("/WEB-INF/p/user_page.jsp").forward(req, res);
-        }
-        else
-        {
-            req.getRequestDispatcher("/WEB-INF/auth").forward(req, res);
-        }
+        
+        System.out.println(req.getParameter("login") + " in the request");
+        req.getSession().setAttribute("login", req.getParameter("login"));
+        req.getSession().setAttribute("pass", req.getParameter("pass"));
+        req.getRequestDispatcher("/WEB-INF/user/user_page.jsp").forward(request, response); 
+        return;
     }
-
+    System.out.println("well, woops");
+    req.setAttribute("loginError", "You are not signed in");
+    req.getRequestDispatcher("WEB-INF/auth/login_page.jsp").forward(req, res);
+    
+    }
 }

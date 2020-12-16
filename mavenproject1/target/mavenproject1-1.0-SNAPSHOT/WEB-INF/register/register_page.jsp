@@ -21,9 +21,9 @@
             <input type="text" required placeholder="acces code" name="code"><br>
             <input type="text" required placeholder="name" name="name"><br>
             <input type="text" required placeholder="email" name="email"><br>
-            <input type="password" required placeholder="password" name="password"><br><br>
+            <input type="password" required placeholder="password" name="pass"><br><br>
             <input class="button" type="submit" value="Зарегестрироваться">
-
+            <p>${registerError}</p>
         </form>      
         
     </div>
