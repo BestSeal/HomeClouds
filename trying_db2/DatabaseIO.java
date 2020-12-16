@@ -8,6 +8,12 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
+<<<<<<< HEAD
+=======
+
+// insert person, log entry, file, access (BROKE IT AGAIN), general select, and select person by id
+
+>>>>>>> db-(alexander)
 public class DatabaseIO 
 {
 	final public static String com = ", ";
@@ -35,7 +41,11 @@ public class DatabaseIO
 		if (IP == "")
 			INSERTQuery += " null)";
 		else
+<<<<<<< HEAD
 			INSERTQuery += frameStr(IP) + ")";
+=======
+			INSERTQuery += frameStr(IP) + ")"; // NOT TESTED
+>>>>>>> db-(alexander)
 		DatabaseFunction.statementExecuteUpdate(connection, INSERTQuery);
 	}
 
@@ -83,6 +93,11 @@ public class DatabaseIO
     } 
 	
 	public static List<String> personSelect(Connection connection, int id) throws SQLException
+<<<<<<< HEAD
+=======
+	// selects with password - for testing purposes mostly
+	// perhaps 'public' is not what I want from it
+>>>>>>> db-(alexander)
 	{
 		List<String> personInfo = new ArrayList<String>(); 
 		if (id == 0)
@@ -92,9 +107,56 @@ public class DatabaseIO
 		return personInfo;
 	}
 	
+<<<<<<< HEAD
+=======
+	public static List<String> personSelect(Connection connection, String login) throws SQLException
+	// selects with password - for testing purposes mostly
+	// perhaps 'public' is not what I want from it
+	{
+		List<String> personInfo = new ArrayList<String>(); 
+		String query = "SELECT * FROM standard_person WHERE login = " + frameStr(login);
+		personInfo = simpleSelect(connection, query);
+		return personInfo;
+	}
+	
+	public static List<String> personSelectwoPass(Connection connection, int id) throws SQLException
+	// selects with password - for testing purposes mostly
+	{
+		List<String> personInfo = new ArrayList<String>(); 
+		if (id == 0)
+			return personInfo;
+		String query = "SELECT person_id, person_access_level, name, email, login "
+				+ "FROM standard_person WHERE person_id = " + id;
+		personInfo = simpleSelect(connection, query);
+		return personInfo;
+	}
+	
+	public static List<String> personSelectwoPass(Connection connection, String login) throws SQLException
+	// selects with password - for testing purposes mostly
+	{
+		List<String> personInfo = new ArrayList<String>();
+		String query = "SELECT person_id, person_access_level, name, email, login "
+				+ "FROM standard_person WHERE login = " + frameStr(login);
+		personInfo = simpleSelect(connection, query);
+		return personInfo;
+	}
+	
+	public static List<String> getAllLogins(Connection connection) throws SQLException
+	{
+		List<String> logins = new ArrayList<String>();
+		String query = "SELECT login FROM standard_person";
+		logins = simpleSelect(connection, query);
+		return logins;
+	}
+	
+>>>>>>> db-(alexander)
 	public static String frameStr(String stringToAdapt)
 	{
 		stringToAdapt = "'" + stringToAdapt + "'";
 		return stringToAdapt;
 	}
+<<<<<<< HEAD
+=======
+	// created it twice. Need to simplify usage.
+>>>>>>> db-(alexander)
 }

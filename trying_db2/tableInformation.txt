@@ -46,7 +46,7 @@ id_of_file BIGSERIAL NOT NULL PRIMARY KEY,
 path_to_file VARCHAR(150) NOT NULL, 
 file_name VARCHAR(150) NOT NULL, 
 general_file_access_level VARCHAR(20) NOT NULL REFERENCES file_access_levels(access_level_name), 
-creator_login VARCHAR(8) REFERENCES standard_person(login) NOT NULL,
+creator_login VARCHAR(80) REFERENCES standard_person(login) NOT NULL,
 UNIQUE (path_to_file, file_name)
 );
 CheckTableForExistence accesses

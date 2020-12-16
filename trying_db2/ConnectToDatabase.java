@@ -11,14 +11,15 @@ public class ConnectToDatabase
 	
 	final static String curDatabase = "jdbc:postgresql://localhost:5432/postgres"; // database data 
 	// will it also be localhost in the final version? 
-	final static String user = "postgres"; // user data
-	final static String password = "elju200postgre"; // user data
+	final static String user = "postgres"; // user login
+	final static String password = "elju200postgre"; // user password
 	// PASSWORD IS DIFFERENT IN DISC DATABASE
 
-	public static Connection GetConnection() throws SQLException, ClassNotFoundException 
+	public static Connection getConnection() throws SQLException, ClassNotFoundException 
+	// named as DriverManager.getConnection, might be confusing
 	{
 		Connection connection = null;
-		Class.forName("org.postgresql.Driver");
+		Class.forName("org.postgresql.Driver"); // register JDBC driver
 		// trying to connect
 		connection = DriverManager.getConnection(curDatabase, user, password);
 		/*
