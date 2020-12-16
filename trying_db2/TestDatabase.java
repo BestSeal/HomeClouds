@@ -1,13 +1,9 @@
 package trying_db2;
 
 import java.sql.SQLException; // possibly needed
-<<<<<<< HEAD
-import java.util.List;
-=======
 //is it org.postgresql.util.PSQLException
 import java.util.List;
 import java.io.FileNotFoundException;
->>>>>>> db-(alexander)
 import java.sql.Connection;
 
 // testing various functions. I delete most experiments, but some are yet here
@@ -20,47 +16,6 @@ public class TestDatabase
 	{
 		try 
 		{
-<<<<<<< HEAD
-			Connection connection = ConnectToDatabase.GetConnection();
-
-			/*
-			String query = "SELECT * FROM standard_person";
-			List<String> people = DatabaseIO.simpleSelect(connection, query);
-			System.out.println(people);
-			
-			query = "SELECT * FROM standard_file";
-			List<String> files = DatabaseIO.simpleSelect(connection, query);
-			System.out.println(files);
-			*/
-			
-			String login, password; int id;
-			
-			login = "Adomin"; password = "complicatedobviously";
-			id = CheckPerson.CheckPersonForExistence(connection, login, password);
-			if (id == 0)
-				System.out.println("Person " + login + " not found");
-			else
-			{
-				System.out.println("Info about " + login);
-				for (String el : DatabaseIO.personSelect(connection, id))
-					System.out.println(el);
-			}
-			
-			System.out.println("\n");
-			login = "Modulator"; password = "qwerty1234";
-			id = CheckPerson.CheckPersonForExistence(connection, login, password);
-			if (id == 0)
-				System.out.println("Person " + login + " not found");
-			else System.out.println(DatabaseIO.personSelect(connection, id));
-			
-		}
-		catch (SQLException | ClassNotFoundException e)
-		{
-			e.printStackTrace();
-		}
-        
-
-=======
 			// need to check deletion of all person info
 			
 			Connection connection = ConnectToDatabase.getConnection();
@@ -123,7 +78,6 @@ public class TestDatabase
 		}
         
 
->>>>>>> db-(alexander)
 		// just function for simplicity. Should be thrown out when included in bigger project
 		// or included in Test Class
 		
