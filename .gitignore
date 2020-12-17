@@ -21,13 +21,14 @@
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
-mavenproject1/nb-configuration.xml
-mavenproject1/nb-configuration.xml
-mavenproject1/target/classes/.netbeans_automatic_build
-mavenproject1/target/maven-archiver/pom.properties
-mavenproject1/target/classes/.netbeans_automatic_build
-mavenproject1/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst
-mavenproject1/target/test-classes/.netbeans_automatic_build
-mavenproject1/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst
-mavenproject1/target/classes/.netbeans_automatic_build
-mavenproject1/target/test-classes/.netbeans_automatic_build
+homeclouds/nb-configuration.xml
+homeclouds/nb-configuration.xml
+homeclouds/target/classes/.netbeans_automatic_build
+homeclouds/target/maven-archiver/pom.properties
+homeclouds/target/classes/.netbeans_automatic_build
+homeclouds/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst
+homeclouds/target/test-classes/.netbeans_automatic_build
+homeclouds/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst
+homeclouds/target/classes/.netbeans_automatic_build
+homeclouds/target/test-classes/.netbeans_automatic_build
+/homeclouds/target/

@@ -1,0 +1,14 @@
+trying_db2\DatabaseIO.class
+servlets\Home.class
+servlets\AuthFilter.class
+servlets\Auth.class
+trying_db2\TestDatabase.class
+trying_db2\DatabaseTables.class
+support\User.class
+support\FileTree.class
+trying_db2\ConnectToDatabase.class
+support\AbsPath.class
+servlets\Register.class
+servlets\UserPage.class
+trying_db2\DatabaseFunction.class
+support\PersonalFolder.class
