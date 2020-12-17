@@ -18,7 +18,7 @@
         <form method="post" action="">
 
             <input type="text" required placeholder="login" name="login"><br>
-            <input type="text" required placeholder="acces code" name="code"><br>
+            <input type="text" placeholder="acces code" name="code"><br>
             <input type="text" required placeholder="name" name="name"><br>
             <input type="text" required placeholder="email" name="email"><br>
             <input type="password" required placeholder="password" name="pass"><br><br>

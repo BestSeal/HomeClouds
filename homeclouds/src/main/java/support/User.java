@@ -4,11 +4,6 @@
  * and open the template in the editor.
  */
 package support;
-import javax.servlet.ServletRequest;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.util.List;
 import trying_db2.*;
 /**

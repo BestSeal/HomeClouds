@@ -7,6 +7,7 @@ package servlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Set;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -25,6 +26,10 @@ public class UserPage extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+            String reqPath = (String) request.getAttribute("path");
+            String path = (String) request.getSession().getAttribute("path");
+            request.setAttribute("path", path + "\\" + reqPath);
+        
             getServletContext().getRequestDispatcher("/WEB-INF/user/user_page.jsp").forward(request, response); 
     }
 

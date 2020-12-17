@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import trying_db2.*;
+import support.*;
 
 /**
  *
@@ -36,7 +37,7 @@ public class Register extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String login = request.getParameter("login");
-        String pass = request.getParameter("password");
+        String pass = request.getParameter("pass");
         String email = request.getParameter("email");
         String code = request.getParameter("code");
         String name = request.getParameter("name");
@@ -56,6 +57,7 @@ public class Register extends HttpServlet {
                 else
                     DatabaseIO.insertPerson(ConnectToDatabase.getConnection(), "regular user", name, email, login, pass);
                 System.out.println("new user " + login);
+                PersonalFolder.NewFolder(login);
                 request.setAttribute("loginError", "New user was registered, you can sign in now"); 
                 response.sendRedirect("/auth");
             }

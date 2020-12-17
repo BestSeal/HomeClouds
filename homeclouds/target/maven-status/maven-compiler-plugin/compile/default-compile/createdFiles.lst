@@ -10,5 +10,7 @@ trying_db2\ConnectToDatabase.class
 support\AbsPath.class
 servlets\Register.class
 servlets\UserPage.class
+support\UsersList.class
 trying_db2\DatabaseFunction.class
+support\File.class
 support\PersonalFolder.class

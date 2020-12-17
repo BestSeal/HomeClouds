@@ -38,7 +38,8 @@ public class AuthFilter implements Filter {
     HttpServletResponse res = (HttpServletResponse) response;
     HttpSession session =  req.getSession();
     System.out.println("filter");
-        try {
+    System.out.println((String)req.getParameter("login") + " " + (String) req.getParameter("pass"));
+    try {
             if (nonNull(session) && nonNull(session.getAttribute("login")) && nonNull(session.getAttribute("pass"))){
                 String login = (String) session.getAttribute("login");
                 String pass = (String) session.getAttribute("pass");
@@ -53,7 +54,6 @@ public class AuthFilter implements Filter {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-    System.out.println((String)req.getParameter("login") + " " + (String) req.getParameter("pass"));
     if (User.validadeUser(req.getParameter("login"), req.getParameter("pass")))
     {
         
@@ -63,6 +63,7 @@ public class AuthFilter implements Filter {
         req.getRequestDispatcher("/WEB-INF/user/user_page.jsp").forward(request, response); 
         return;
     }
+            
     System.out.println("well, woops");
     req.setAttribute("loginError", "You are not signed in");
     req.getRequestDispatcher("WEB-INF/auth/login_page.jsp").forward(req, res);

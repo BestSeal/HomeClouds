@@ -1,0 +1,14 @@
+.explorer
+{
+  background: rgba(0, 0, 0, 0);
+  border: rgba(0, 0, 0, 0);
+}
+button
+{
+  background: inherit;
+  border: inherit;
+}
+img
+{
+  height: 100px
+}

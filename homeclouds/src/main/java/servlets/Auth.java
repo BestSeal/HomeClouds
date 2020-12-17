@@ -52,8 +52,8 @@ public class Auth extends HttpServlet {
                     System.out.println(login + " logged in");
                     request.getSession().setAttribute("pass", pass);
                     request.getSession().setAttribute("login", login);
-                    request.getSession().setAttribute("userId", userId);
-                    request.getSession().setAttribute("name", userInfo.get(2));
+                    request.getSession().setAttribute("path", login);
+                    
                     
                     getServletContext().getRequestDispatcher("/WEB-INF/user/user_page.jsp").forward(request, response); 
                 }
