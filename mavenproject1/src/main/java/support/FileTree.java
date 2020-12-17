@@ -1,10 +1,10 @@
-package support;
 import java.io.File;
+import java.util.Objects;
 
 public class FileTree {
     public static String GetFiles(String login){
         char separator = File.separatorChar;
-        String absPath = "D:\\dev\\users\\" + login;
+        String absPath = AbsPath.path + login;
         File fileTree = new File(absPath);
         StringBuilder list = new StringBuilder("");
         if (fileTree.isDirectory())
@@ -12,8 +12,8 @@ public class FileTree {
         return list.toString();
     }
     private static StringBuilder RecursiveFileSearch(File fileTree, StringBuilder builder){
-        if (fileTree.list().length != 0) builder.append("<ul>").append(System.lineSeparator());
-        for (File file : fileTree.listFiles())
+        if (Objects.requireNonNull(fileTree.list()).length != 0) builder.append("<ul>").append(System.lineSeparator());
+        for (File file : Objects.requireNonNull(fileTree.listFiles()))
         {
             builder.append("<li>").append(file.getAbsolutePath());
             if (file.isDirectory() ){
@@ -21,7 +21,7 @@ public class FileTree {
             }
             builder.append("</li>");
         }
-        if (fileTree.list().length != 0) builder.append("</ul>").append(System.lineSeparator());
+        if (Objects.requireNonNull(fileTree.list()).length != 0) builder.append("</ul>").append(System.lineSeparator());
         return builder;
     }
 }
