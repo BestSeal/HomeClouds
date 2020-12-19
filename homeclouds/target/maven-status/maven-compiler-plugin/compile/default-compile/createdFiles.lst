@@ -3,9 +3,11 @@ servlets\Home.class
 servlets\AuthFilter.class
 servlets\Auth.class
 trying_db2\TestDatabase.class
+support\buttonsHandler.class
 trying_db2\DatabaseTables.class
 support\User.class
 support\FileTree.class
+support\MmmCookie.class
 trying_db2\ConnectToDatabase.class
 support\AbsPath.class
 servlets\Register.class

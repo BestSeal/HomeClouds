@@ -1,14 +1,13 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@ page import="support.*" %>
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>User Page</title>
-        <link rel="stylesheet" href="style.css">
-    </head>
+
+<jsp:include page="header.jsp"></jsp:include>
     <body>
         <h1>${login}</h1>
-        <jsp:include page="files.jsp"></jsp:include>
+        <h2>${path}</h2>
+        <div class = "files">
+            <p>Файлы:</p><b>
+            <p>${files}</p>
+        </div>
     </body>
-</html>
+
+<jsp:include page="footer.jsp"></jsp:include>

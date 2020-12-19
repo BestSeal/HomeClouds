@@ -8,17 +8,24 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.Map;
 import static java.util.Objects.nonNull;
 import javax.servlet.http.*;
+import java.util.logging.Logger;
 import trying_db2.*;
 import support.User.*;
-
+import java.util.logging.FileHandler;
+import java.util.logging.ConsoleHandler;
+import support.MmmCookie;
+import support.buttonsHandler;
 /**
  *
  * @author Ilya G
  */
 @WebFilter(urlPatterns = "/user/*")
 public class AuthFilter implements Filter {
+
+    
     
     @Override
     public void init(FilterConfig filterConfig) throws ServletException{};
@@ -36,37 +43,26 @@ public class AuthFilter implements Filter {
       
     HttpServletRequest req = (HttpServletRequest) request;
     HttpServletResponse res = (HttpServletResponse) response;
-    HttpSession session =  req.getSession();
-    System.out.println("filter");
-    System.out.println((String)req.getParameter("login") + " " + (String) req.getParameter("pass"));
+    System.out.println("----filter----");   
+    String cookieLogin = MmmCookie.getInfoFromCookie(req, "login");
     try {
-            if (nonNull(session) && nonNull(session.getAttribute("login")) && nonNull(session.getAttribute("pass"))){
-                String login = (String) session.getAttribute("login");
-                String pass = (String) session.getAttribute("pass");
-                System.out.println(login);
-                if (User.validadeUser(login, pass))
+            if (nonNull(req.getSession().getAttribute("login")) && nonNull(cookieLogin)){
+                 String sessionLogin = req.getSession().getAttribute("login").toString();
+                System.out.println(cookieLogin + " " + sessionLogin);
+                if (cookieLogin.equals(sessionLogin))
                 {
-                    System.out.println(login + " in the session");
-                    req.getRequestDispatcher("/WEB-INF/user/user_page.jsp").forward(request, response); 
-                    return;
+                    System.out.println(sessionLogin + " " + "tries to open user_page");
+                    filterChain.doFilter(req, res);    
                 }
+
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
-        }
-    if (User.validadeUser(req.getParameter("login"), req.getParameter("pass")))
-    {
-        
-        System.out.println(req.getParameter("login") + " in the request");
-        req.getSession().setAttribute("login", req.getParameter("login"));
-        req.getSession().setAttribute("pass", req.getParameter("pass"));
-        req.getRequestDispatcher("/WEB-INF/user/user_page.jsp").forward(request, response); 
-        return;
-    }
-            
+        }       
     System.out.println("well, woops");
-    req.setAttribute("loginError", "You are not signed in");
-    req.getRequestDispatcher("WEB-INF/auth/login_page.jsp").forward(req, res);
-    
+    res.sendRedirect("../auth/");
+    //req.getRequestDispatcher("WEB-INF/auth/login_page.jsp").forward(request, response);
+     System.out.println("----filter done----");  
     }
+ 
 }
