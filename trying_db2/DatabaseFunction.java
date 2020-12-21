@@ -109,6 +109,14 @@ public class DatabaseFunction
 		statementExecuteUpdate(connection, "DELETE FROM standard_file WHERE creator_login = " + frameStr(login));
 		deletePerson(connection, login);
 	}
+	
+	public static void deleteLink(Connection connection, String login, String link) throws SQLException
+	{
+		statementExecuteUpdate(connection, "DELETE FROM shared_files WHERE link = " + frameStr(link)
+				+ " AND creator_login = " + frameStr(login));
+	}
+
+	
 	// create id variation? Or maybe switch to id
 	
 	// delete all logs? or about person

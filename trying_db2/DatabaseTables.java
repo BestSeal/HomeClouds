@@ -57,7 +57,7 @@ public class DatabaseTables
 		// DROPping tables doesn't drop sequences, so id =3, 6,... is the result
 		// can be automated (find out all tables, for ... Cascade) 
 		// 
-		String[] tableNamesInDeletionOrder = {"accesses", "standard_file", "standard_log_entry",
+		String[] tableNamesInDeletionOrder = {"shared_files", "accesses", "standard_file", "standard_log_entry",
 				"standard_person", "user_access_levels", "file_access_levels"}; // perhaps outsource it further
 		// now that I think about it, it's not necessary to drop everything
 		// I can just drop files whose names I put in args
@@ -66,7 +66,7 @@ public class DatabaseTables
 		// not sure how to comment on that
 		for (String currentTable : tableNamesInDeletionOrder)
 			if (DatabaseFunction.checkTableForExistence(currentTable, connection))
-				DatabaseFunction.statementExecuteUpdate(connection, "DROP TABLE " + currentTable + ";");
+				DatabaseFunction.statementExecuteUpdate(connection, "DROP TABLE " + currentTable + " CASCADE;");
 		System.out.println("Tables do not exist now");
 	}
 }

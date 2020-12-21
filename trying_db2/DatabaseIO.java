@@ -53,27 +53,37 @@ public class DatabaseIO
 		DatabaseFunction.statementExecuteUpdate(connection, INSERTQuery);
 	}
 
-	public static void insertFile(Connection connection, String path_to_file, String file_name, 
+	public static void insertFile(Connection connection, String full_path, 
 			String general_file_access_level, String creator_login) throws SQLException
 	{
 		// adding \ or '\' might create problem (in path)
 		// / is fine? 
-		String INSERTQuery = "INSERT INTO standard_file(path_to_file, file_name, general_file_access_level, "
+		String INSERTQuery = "INSERT INTO standard_file(full_path, general_file_access_level, "
 				+ "creator_login) VALUES(";
-		INSERTQuery += frameStr(path_to_file) + com + frameStr(file_name) 
-				+ com + frameStr(general_file_access_level) + com 
-				+ frameStr(creator_login) + ")"; 
+		INSERTQuery += frameStr(full_path) + com + frameStr(general_file_access_level) 
+				+ com + frameStr(creator_login) + ")"; 
 		DatabaseFunction.statementExecuteUpdate(connection, INSERTQuery);
 	}
 	
-	public static void insertAccess(Connection connection, String path_to_file, String file_name,
-			String person_login, String file_access_level) throws SQLException
-	// DOES NOT WORK	
+	public static void insertShare(Connection connection, String full_path,
+			String creator_login, String link) throws SQLException
 	{
-		String INSERTQuery = "INSERT INTO standard_file(path_to_file, file_name, person_login, "
+		String INSERTQuery = "INSERT INTO shared_files(full_path, creator_login, "
+				+ "link) VALUES(";
+		INSERTQuery += frameStr(full_path) + com + frameStr(creator_login) 
+				+ com + frameStr(link) + ")"; 
+		DatabaseFunction.statementExecuteUpdate(connection, INSERTQuery);
+	}
+
+	public static void insertAccess(Connection connection, String full_path,
+			String person_login, String file_access_level) throws SQLException
+	// DOES NOT WORK
+	// but we do not use it in current version, so it is an artifact
+	{
+		String INSERTQuery = "INSERT INTO standard_file(full_path, person_login, "
 				+ "file_access_level) VALUES(";
-		INSERTQuery += frameStr(path_to_file) + com + frameStr(file_name) + com
-				+ frameStr(person_login) + com + frameStr(file_access_level) + ")"; 
+		INSERTQuery += frameStr(full_path) + com + frameStr(person_login) 
+				+ com + frameStr(file_access_level) + ")"; 
 		DatabaseFunction.statementExecuteUpdate(connection, INSERTQuery);
 	}
 	
@@ -146,6 +156,28 @@ public class DatabaseIO
 		String query = "SELECT login FROM standard_person";
 		logins = simpleSelect(connection, query);
 		return logins;
+	}
+	
+	public static List<String> sharedSelect(Connection connection, String login) throws SQLException
+	{
+		List<String> linkInfo = new ArrayList<String>();
+		String query = "SELECT full_path, link FROM shared_files WHERE creator_login = " + frameStr(login);
+		linkInfo = simpleSelect(connection, query);
+		return linkInfo;
+	}
+	
+	public static String getPath(Connection connection, String link) throws SQLException
+	{
+		String path = null;
+		String query = "SELECT full_path FROM shared_files WHERE link = " + frameStr(link);
+		List<String> pathInfo = simpleSelect(connection, query);
+		try 
+		{
+			path = pathInfo.get(0);
+		}
+		catch (IndexOutOfBoundsException e)
+		{ }
+		return path;
 	}
 	
 	public static String frameStr(String stringToAdapt)
