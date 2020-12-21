@@ -5,7 +5,7 @@ import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.FileSystemException;
 import java.nio.file.FileSystemNotFoundException;
 
-public class PersonalFolder {
+public abstract class PersonalFolder {
     public static void NewFolder(String login) throws FileSystemException {
         File file = new File(AbsPath.path + login);
         if (file.exists()) throw new FileAlreadyExistsException(file.getAbsolutePath());
