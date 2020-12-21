@@ -1,13 +1,12 @@
-package trying_db2;
+package cloudDatabase;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.ResultSet;
-//import java.sql.ResultSetMetaData; // for rs.getMetaData()
-//import java.sql.SQLException; // throws SQLException
+import java.sql.ResultSetMetaData; // for rs.getMetaData()
+import java.sql.SQLException; // throws SQLException
 import java.util.ArrayList;
 import java.util.List;
-
 
 // insert person, log entry, file, access (BROKE IT AGAIN), general select, and select person by id
 
@@ -35,16 +34,12 @@ public class DatabaseIO
 				+ frameStr(name) + com + frameStr(login) + com + frameStr(password) + ")";
 		}
 		DatabaseFunction.statementExecuteUpdate(connection, INSERTQuery);
-		// if null string
 	}
 	
 	public static void insertLogEntry(Connection connection, String entry_type, String message,
 			String person_login, String IP) throws SQLException
-	// can String house message VARCHAR(300) and others simultaneously 
-	// message,	person_login, IP can be empty strings
 	{
-		String INSERTQuery = "INSERT INTO standard_log_entry(entry_type, message, person_login, IP) VALUES(";
-		// what are restrictions on IP? 
+		String INSERTQuery = "INSERT INTO standard_log_entry(entry_type, message, person_login, IP) VALUES("; 
 		INSERTQuery += frameStr(entry_type) + com + frameStr(message) + com + frameStr(person_login) + com;
 		if (IP == "")
 			INSERTQuery += " null)";
@@ -53,27 +48,35 @@ public class DatabaseIO
 		DatabaseFunction.statementExecuteUpdate(connection, INSERTQuery);
 	}
 
-	public static void insertFile(Connection connection, String path_to_file, String file_name, 
+	public static void insertFile(Connection connection, String full_path, 
 			String general_file_access_level, String creator_login) throws SQLException
 	{
-		// adding \ or '\' might create problem (in path)
-		// / is fine? 
-		String INSERTQuery = "INSERT INTO standard_file(path_to_file, file_name, general_file_access_level, "
+		String INSERTQuery = "INSERT INTO standard_file(full_path, general_file_access_level, "
 				+ "creator_login) VALUES(";
-		INSERTQuery += frameStr(path_to_file) + com + frameStr(file_name) 
-				+ com + frameStr(general_file_access_level) + com 
-				+ frameStr(creator_login) + ")"; 
+		INSERTQuery += frameStr(full_path) + com + frameStr(general_file_access_level) 
+				+ com + frameStr(creator_login) + ")"; 
 		DatabaseFunction.statementExecuteUpdate(connection, INSERTQuery);
 	}
 	
-	public static void insertAccess(Connection connection, String path_to_file, String file_name,
-			String person_login, String file_access_level) throws SQLException
-	// DOES NOT WORK	
+	public static void insertShare(Connection connection, String full_path,
+			String creator_login, String link) throws SQLException
 	{
-		String INSERTQuery = "INSERT INTO standard_file(path_to_file, file_name, person_login, "
+		String INSERTQuery = "INSERT INTO shared_files(full_path, creator_login, "
+				+ "link) VALUES(";
+		INSERTQuery += frameStr(full_path) + com + frameStr(creator_login) 
+				+ com + frameStr(link) + ")"; 
+		DatabaseFunction.statementExecuteUpdate(connection, INSERTQuery);
+	}
+
+	public static void insertAccess(Connection connection, String full_path,
+			String person_login, String file_access_level) throws SQLException
+	// DOES NOT WORK
+	// but we do not use it in current version, so it is an artifact
+	{
+		String INSERTQuery = "INSERT INTO standard_file(full_path, person_login, "
 				+ "file_access_level) VALUES(";
-		INSERTQuery += frameStr(path_to_file) + com + frameStr(file_name) + com
-				+ frameStr(person_login) + com + frameStr(file_access_level) + ")"; 
+		INSERTQuery += frameStr(full_path) + com + frameStr(person_login) 
+				+ com + frameStr(file_access_level) + ")"; 
 		DatabaseFunction.statementExecuteUpdate(connection, INSERTQuery);
 	}
 	
@@ -91,7 +94,7 @@ public class DatabaseIO
     	// // connection.close(); connection = null;
     	return selectList;
     	// rsmd doesn't have 'close'
-    	// check it for "org.postgresql.util.PSQLException: Ã‡Ã Ã¯Ã°Ã®Ã± Ã­Ã¥ Ã¢Ã¥Ã°Ã­Ã³Ã« Ã°Ã¥Ã§Ã³Ã«Ã¼Ã²Ã Ã²Ã®Ã¢." in the future?
+    	// check it for "org.postgresql.util.PSQLException: Çàïðîñ íå âåðíóë ðåçóëüòàòîâ." in the future?
     	// possible exception Cannot invoke "java.sql.ResultSet.getMetaData()" because "rs" is null
     	// results metadata, like column names and such
     } 
@@ -146,6 +149,28 @@ public class DatabaseIO
 		String query = "SELECT login FROM standard_person";
 		logins = simpleSelect(connection, query);
 		return logins;
+	}
+	
+	public static List<String> sharedSelect(Connection connection, String login) throws SQLException
+	{
+		List<String> linkInfo = new ArrayList<String>();
+		String query = "SELECT full_path, link FROM shared_files WHERE creator_login = " + frameStr(login);
+		linkInfo = simpleSelect(connection, query);
+		return linkInfo;
+	}
+	
+	public static String getPath(Connection connection, String link) throws SQLException
+	{
+		String path = null;
+		String query = "SELECT full_path FROM shared_files WHERE link = " + frameStr(link);
+		List<String> pathInfo = simpleSelect(connection, query);
+		try 
+		{
+			path = pathInfo.get(0);
+		}
+		catch (IndexOutOfBoundsException e)
+		{ }
+		return path;
 	}
 	
 	public static String frameStr(String stringToAdapt)

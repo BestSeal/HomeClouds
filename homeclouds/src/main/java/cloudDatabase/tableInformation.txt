@@ -43,19 +43,22 @@ when_happened TIMESTAMP DEFAULT LOCALTIMESTAMP
 CheckTableForExistence standard_file 
 CREATE TABLE standard_file (
 id_of_file BIGSERIAL NOT NULL PRIMARY KEY, 
-path_to_file VARCHAR(150) NOT NULL, 
-file_name VARCHAR(150) NOT NULL, 
+full_path VARCHAR(300) NOT NULL UNIQUE, 
 general_file_access_level VARCHAR(20) NOT NULL REFERENCES file_access_levels(access_level_name), 
-creator_login VARCHAR(80) REFERENCES standard_person(login) NOT NULL,
-UNIQUE (path_to_file, file_name)
+creator_login VARCHAR(80) REFERENCES standard_person(login) NOT NULL
 );
 CheckTableForExistence accesses
 CREATE TABLE accesses (
 access_id BIGSERIAL NOT NULL PRIMARY KEY,
-path_to_file VARCHAR(150) NOT NULL,
-file_name VARCHAR(150) NOT NULL,
+full_path VARCHAR(300) NOT NULL REFERENCES standard_file(full_path),
 person_login VARCHAR(80) NOT NULL REFERENCES standard_person(login),
 file_access_level VARCHAR(80) NOT NULL REFERENCES file_access_levels(access_level_name),
-FOREIGN KEY (file_name, path_to_file) REFERENCES standard_file(path_to_file, file_name),
-UNIQUE (path_to_file, file_name, person_login)
+UNIQUE (full_path, person_login)
+);
+CheckTableForExistence shared_files
+CREATE TABLE shared_files (
+id_of_share BIGSERIAL NOT NULL PRIMARY KEY,
+full_path VARCHAR(300) NOT NULL REFERENCES standard_file(full_path), 
+creator_login VARCHAR(80) REFERENCES standard_person(login) NOT NULL,
+link VARCHAR(400) NOT NULL
 );
