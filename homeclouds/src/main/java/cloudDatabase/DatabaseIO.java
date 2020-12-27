@@ -94,7 +94,7 @@ public class DatabaseIO
     	// // connection.close(); connection = null;
     	return selectList;
     	// rsmd doesn't have 'close'
-    	// check it for "org.postgresql.util.PSQLException: Запрос не вернул результатов." in the future?
+    	// check it for "org.postgresql.util.PSQLException
     	// possible exception Cannot invoke "java.sql.ResultSet.getMetaData()" because "rs" is null
     	// results metadata, like column names and such
     } 

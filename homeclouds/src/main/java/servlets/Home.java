@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -24,7 +25,13 @@ public class Home extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-    getServletContext().getRequestDispatcher("/WEB-INF/index.html").forward(request, response);    
+        Cookie nyamCookie = new Cookie("login", "docu");
+        nyamCookie.setMaxAge(10 * 60);          
+        response.addCookie(nyamCookie);
+        nyamCookie = new Cookie("path", "docu");
+        nyamCookie.setMaxAge(10 * 60);          
+        response.addCookie(nyamCookie);
+        getServletContext().getRequestDispatcher("/WEB-INF/index.html").forward(request, response);    
     }
 
     @Override
