@@ -1,9 +1,19 @@
 jQuery(function(){
 
-    function openSuccess(responseText)
+
+    let path = Cookies.get('login');
+    Cookies.set('path',path);
+    Cookies.set('login',"docu");//убрать позже
+    console.log("cookies set");
+    $.ajax({
+        type: "POST",
+        url: "/hop/",
+        data: "path=" + path + "&action=open",
+        success:function(responseText)
     {
         console.log(responseText);
         Cookies.set("path", path);
+        console.log(path);
         $('.file-explorer').empty();
         $('.file-explorer').append($(responseText));
         $('.context-menu').hide(100);
@@ -11,14 +21,6 @@ jQuery(function(){
         $('.path').empty();
         $('.path').append("<p>" + path + "</p>");
     }
-    let path = Cookies.get('login');
-    Cookies.set('path',path);
-    Cookies.set('login',"docu");//убрать позже
-    $.ajax({
-        type: "POST",
-        url: "/hop/",
-        data: "path=" + path + "&action=open",
-        success : openSuccess
     });
 
   $('.file-explorer').on('contextmenu','.button',function(event){
@@ -54,11 +56,63 @@ jQuery(function(){
     $('.context-menu-folder').attr('data-name',"");
   });
 
+    $('.upload').on('click',function(event){
+        $('.upload-message').show(250);
+        $('.upload-message').css('top', event.pageY - 12);
+        $('.upload-message').css('left', event.pageX - 12);
+    });
+    
+    var files;
+    
+    $('input[type=file]').on('change', function(){
+       console.log((this).files);
+       files = $(this).files;
+    });
+        
+    $('.upload-icon').on('click', function(event){
+        console.log('click');
+        var file_data = $("#upload-input").prop("files")[0];  
+        var data = new FormData();
+        data.append('file',file_data);
+   
+        console.log(data);
+        console.log(file_data);
+        $.ajax({
+            url : '/upload/',
+            type : 'POST',
+            data : data,
+            cache : false,
+            dataType : 'json',
+            processData : false,
+            contentType : false, 
+            success : function()
+            {
+                $('.upload-message').hide(250);
+                $.ajax({
+                type: "POST",
+                url: "/hop/",
+                data: "path=" + Cookies.get('path')  + "&action=open" ,
+                success : function (responseText)
+            {
+                console.log(responseText);
+                $('.file-explorer').empty();
+                $('.file-explorer').append($(responseText));
+                $('.context-menu').hide(100);
+                $('.context-menu-folder').hide(100);
+            }
+            });
+            
+            }
+        })
+    });
+
+
   $('.context-icon').on('click',function(event){
     let login = Cookies.get("login");
     let act = $(this).attr('data-do');
     let name = $(this).parent().parent().parent().attr('data-name');
     let path = Cookies.get("path");
+    let tmp = path + "/" + name;
     switch(act)
     {
         case 'open':
@@ -66,8 +120,19 @@ jQuery(function(){
             $.ajax({
                 type: "POST",
                 url: "/hop/",
-                data: "path=" + path  + "&action=" + act,
-                success : openSuccess
+                data: "path=" + tmp  + "&action=" + act,
+                success : function (responseText)
+            {
+                console.log(responseText);
+                Cookies.set("path", tmp);
+                console.log(tmp);
+                $('.file-explorer').empty();
+                $('.file-explorer').append($(responseText));
+                $('.context-menu').hide(100);
+                $('.context-menu-folder').hide(100);
+                $('.path').empty();
+                $('.path').append("<p>" + tmp + "</p>");
+            }
             });
             break;
         case 'send':

@@ -110,6 +110,19 @@ public class DatabaseIO
 		personInfo = simpleSelect(connection, query);
 		return personInfo;
 	}
+        
+        public static String selectLinkByPath(Connection connection, String path, String login) throws SQLException
+
+	{
+		String query = "SELECT link FROM shared_files WHERE creator_login = " + frameStr(login) + " AND full_path = " + frameStr(path) ;
+                List<String> res = simpleSelect(connection, query);
+                if (res.isEmpty())
+                {
+                    return null;
+                }
+                
+		return res.get(0);
+	}
 	
 	public static List<String> personSelect(Connection connection, String login) throws SQLException
 	// selects with password - for testing purposes mostly

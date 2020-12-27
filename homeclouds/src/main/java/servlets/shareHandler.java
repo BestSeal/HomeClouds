@@ -40,11 +40,23 @@ public class shareHandler extends HttpServlet {
         {
             try {
                 Connection connection = ConnectToDatabase.getConnection();
-                List<String> links = DatabaseIO.sharedSelect(connection, login);
-                String addr = "localhost:8080"; // изменить перед заливом на пай
-                addr += linkGenerator.generateLink(login, file);
-                System.out.println(addr);
-                response.getWriter().write(addr);
+                String link = DatabaseIO.selectLinkByPath(connection, path, login);
+                if (nonNull(link))
+                {
+                    response.getWriter().write(link);
+                    System.out.println("existed link:" + link);
+                    connection.close();
+                    return;
+                }
+                
+                link = "localhost:8080"; // изменить перед заливом на пай
+                link += linkGenerator.generateLink(login, file);
+                DatabaseIO.insertShare(connection, path, login, link);
+                
+                connection.commit();
+                connection.close();
+                System.out.println("new link:" + link);
+                response.getWriter().write(link);  
                 
             } catch (Exception e) {
                 System.out.println(e.getMessage());
@@ -69,4 +81,5 @@ public class shareHandler extends HttpServlet {
         return null;
     }
     
+
 }

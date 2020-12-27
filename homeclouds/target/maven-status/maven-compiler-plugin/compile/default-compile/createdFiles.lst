@@ -1,5 +1,4 @@
 cloudDatabase\DatabaseIO.class
-servlets\Home.class
 cloudDatabase\DatabaseFunction.class
 servlets\AuthFilter.class
 servlets\Auth.class
@@ -13,9 +12,8 @@ support\MmmCookie.class
 support\AbsPath.class
 servlets\Register.class
 servlets\shareHandler.class
+servlets\uploadHandler.class
 support\FileManager.class
-servlets\UserPage.class
 cloudDatabase\DatabaseTables.class
 support\UsersList.class
-support\File.class
 support\PersonalFolder.class

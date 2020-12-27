@@ -1,4 +1,4 @@
-.context-icon
+.context-icon, .upload
 {
   width: 25px;
 }
@@ -56,10 +56,10 @@ img
  .container {
   width: 100%;
   max-width: 1024px; /*максимальная ширина может иметь другое значение*/
-  padding: 0 15px;
+  padding: 15px;
   margin: 0 auto;
 }
-.message
+.message, .upload-message
 {
     width: auto;
     height: auto;
@@ -71,4 +71,9 @@ img
     z-index: 10;
     position: absolute;
     padding: 5px;
+}
+.upload-icon
+{
+    height: 25px;
+
 }

@@ -23,17 +23,16 @@ import cloudDatabase.*;
  *
  * @author docuc
  */
-@WebServlet(name = "Auth", urlPatterns = {"/auth/*"})
+@WebServlet(name = "Auth", urlPatterns = {"/index.html"})
 public class Auth extends HttpServlet {
     
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response)
     throws IOException {
         try {
-            getServletContext().getRequestDispatcher("/WEB-INF/auth/login_page.jsp").forward(request, response); 
+            getServletContext().getRequestDispatcher("/WEB-INF/index.html").forward(request, response); 
         } catch (Exception e) {
         }
-        
     }
     
     @Override
@@ -59,17 +58,22 @@ public class Auth extends HttpServlet {
                     request.getSession().setMaxInactiveInterval(10 * 60);
                     System.out.println(request.getSession().getId());
                     Cookie nyamCookie = new Cookie("login", login);
-                    nyamCookie.setMaxAge(10 * 60);          
+                    nyamCookie.setMaxAge(10 * 60);
+                    Cookie pathCookie = new Cookie("path", login);
+                    pathCookie.setMaxAge(10 * 60);    
                     System.out.println("----auth done----");
                     response.addCookie(nyamCookie);
-                    response.sendRedirect("../user/");
+                    response.addCookie(pathCookie);
+
+                    getServletContext().getRequestDispatcher("/WEB-INF/user/").forward(request, response); 
+
                     return;
                 }
             }
             else
             {
-                request.setAttribute("loginError", "wrong login");
-                getServletContext().getRequestDispatcher("/WEB-INF/auth/login_page.jsp").forward(request, response);
+
+                response.getWriter().write("login error");
             }
             
 

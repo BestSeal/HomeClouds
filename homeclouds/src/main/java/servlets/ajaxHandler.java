@@ -35,19 +35,19 @@ public class ajaxHandler extends HttpServlet {
             switch (action)
             {
                 case ("open"):
-                    System.out.println("open");
+                    System.out.println("-- open --");
                     response.getWriter().write(FileTree.ExploreDirectory(path));
                     break;                   
                 case ("send"):
-                    System.out.println("send");
+                    System.out.println("-- send --");
                     
                     break;
                 case ("download"):
-                    System.out.println("download");
+                    System.out.println("-- download --");
                     
                     break;
                 case("delete"):
-                    System.out.println("delete");
+                    System.out.println("-- delete --");
                     
                     break;
             }
