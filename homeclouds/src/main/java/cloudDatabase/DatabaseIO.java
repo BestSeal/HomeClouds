@@ -94,7 +94,7 @@ public class DatabaseIO
     	// // connection.close(); connection = null;
     	return selectList;
     	// rsmd doesn't have 'close'
-    	// check it for "org.postgresql.util.PSQLException: Запрос не вернул результатов." in the future?
+    	// check it for "org.postgresql.util.PSQLException
     	// possible exception Cannot invoke "java.sql.ResultSet.getMetaData()" because "rs" is null
     	// results metadata, like column names and such
     } 
@@ -109,6 +109,19 @@ public class DatabaseIO
 		String query = "SELECT * FROM standard_person WHERE person_id = " + id;
 		personInfo = simpleSelect(connection, query);
 		return personInfo;
+	}
+        
+        public static String selectLinkByPath(Connection connection, String path, String login) throws SQLException
+
+	{
+		String query = "SELECT link FROM shared_files WHERE creator_login = " + frameStr(login) + " AND full_path = " + frameStr(path) ;
+                List<String> res = simpleSelect(connection, query);
+                if (res.isEmpty())
+                {
+                    return null;
+                }
+                
+		return res.get(0);
 	}
 	
 	public static List<String> personSelect(Connection connection, String login) throws SQLException

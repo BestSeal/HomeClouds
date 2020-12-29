@@ -12,7 +12,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import trying_db2.*;
+import cloudDatabase.*;
+import java.sql.Connection;
 import support.*;
 
 /**
@@ -27,7 +28,7 @@ public class Register extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response)
     throws IOException {
         try {
-            getServletContext().getRequestDispatcher("/WEB-INF/register/register_page.jsp").forward(request, response); 
+            getServletContext().getRequestDispatcher("/WEB-INF/register/index.html").forward(request, response); 
         } catch (Exception e) {
         }
         
@@ -42,29 +43,25 @@ public class Register extends HttpServlet {
         String code = request.getParameter("code");
         String name = request.getParameter("name");
         try {
-            System.out.println("register");
-            if (DatabaseFunction.getPersonId(ConnectToDatabase.getConnection(), login) != 0)
+            Connection connection = ConnectToDatabase.getConnection();
+            System.out.println("------------ register -------------");
+            if (DatabaseFunction.getPersonId(connection, login) != 0)
             {
-                String error = "Такой пользователь уже зарегистрирован. Попробуйте <a href=\"auth\">авторизоваться.</a>";
-                request.setAttribute("registerError", error);  
                 System.out.println("user exists");
-                getServletContext().getRequestDispatcher("/WEB-INF/register/register_page.jsp").forward(request, response);
+                response.getWriter().write("User exists");
             }
             else
             {
-                if ("1234".equals(code))
-                    DatabaseIO.insertPerson(ConnectToDatabase.getConnection(), "admin", name, email, login, pass);
-                else
-                    DatabaseIO.insertPerson(ConnectToDatabase.getConnection(), "regular user", name, email, login, pass);
-                System.out.println("new user " + login);
+                DatabaseIO.insertPerson(connection, "admin", name, email, login, pass);
+                System.out.println("------------ new user " + login + " -------------");
                 PersonalFolder.NewFolder(login);
-                request.setAttribute("loginError", "New user was registered, you can sign in now"); 
-                response.sendRedirect("/auth");
-            }
+                response.sendRedirect("../index.html");
+            } 
+            connection.close();
         } catch (Exception e) {
             System.out.println(e);
         }
-        
+            
         
     }
     

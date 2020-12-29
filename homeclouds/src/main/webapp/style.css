@@ -1,15 +1,79 @@
-.explorer
+.context-icon, .upload
 {
-  background: rgba(0, 0, 0, 0);
-  border: rgba(0, 0, 0, 0);
+  width: 25px;
 }
-button
+.context-menu,.context-menu-folder
 {
-  background: inherit;
-  border: inherit;
+  border-radius: 10px;
+  border: 1px solid rgb(183, 199, 199);
+  background: white;
+  display: none;
   vertical-align: top;
+  z-index: 10;
+  position: absolute;
+}
+li
+{
+  list-style-type: none;
+}
+li:hover
+{
+  border-radius: 10px;
+  background-color: rgb(183, 199, 199);
+}
+.file-explorer
+{
+  display: inline-block;
+  margin-left: auto;
+  margin-right: auto;
+}
+.button
+{
+  width: 100px;
+  display: inline-block;
+}
+.button:hover
+{
+  background: rgb(208, 223, 230);
+  border-radius: 10px;
 }
 img
 {
-  height: 100px
+  width: inherit;
+  height: inherit;
+}
+ .file-sign
+ {
+     text-align: center;
+
+ }
+ 
+ .path
+ {
+     
+     display: inline;
+ }
+ .container {
+  width: 100%;
+  max-width: 1024px; /*максимальная ширина может иметь другое значение*/
+  padding: 15px;
+  margin: 0 auto;
+}
+.message, .upload-message
+{
+    width: auto;
+    height: auto;
+    border: solid rgb(208, 223, 230) 5px;
+    border-radius: 10px;
+    background: rgb(208, 223, 230);
+    display: none;
+    vertical-align: top;
+    z-index: 10;
+    position: absolute;
+    padding: 5px;
+}
+.upload-icon
+{
+    height: 25px;
+
 }

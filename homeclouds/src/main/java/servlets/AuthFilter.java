@@ -12,7 +12,7 @@ import java.util.Map;
 import static java.util.Objects.nonNull;
 import javax.servlet.http.*;
 import java.util.logging.Logger;
-import trying_db2.*;
+import cloudDatabase.*;
 import support.User.*;
 import java.util.logging.FileHandler;
 import java.util.logging.ConsoleHandler;
@@ -60,7 +60,7 @@ public class AuthFilter implements Filter {
             System.out.println(e.getMessage());
         }       
     System.out.println("well, woops");
-    res.sendRedirect("../auth/");
+    res.sendRedirect("../");
     //req.getRequestDispatcher("WEB-INF/auth/login_page.jsp").forward(request, response);
      System.out.println("----filter done----");  
     }
