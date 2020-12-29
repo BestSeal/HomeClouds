@@ -75,8 +75,6 @@ jQuery(function(){
         var data = new FormData();
         data.append('file',file_data);
    
-        console.log(data);
-        console.log(file_data);
         $.ajax({
             url : '/upload/',
             type : 'POST',
@@ -89,19 +87,24 @@ jQuery(function(){
             {
                 $('.upload-message').hide(250);
                 $.ajax({
-                type: "POST",
-                url: "/hop/",
-                data: "path=" + Cookies.get('path')  + "&action=open" ,
-                success : function (responseText)
+                    type: "POST",
+                    url: "/hop/",
+                    data: "path=" + Cookies.get('path')  + "&action=open" ,
+                    success : function (responseText)
+                    {
+                        console.log(responseText);
+                        $('.file-explorer').empty();
+                        $('.file-explorer').append($(responseText));
+                        $('.context-menu').hide(100);
+                        $('.context-menu-folder').hide(100);
+                    },
+
+                });
+
+            },
+            error: function(msg)
             {
-                console.log(responseText);
-                $('.file-explorer').empty();
-                $('.file-explorer').append($(responseText));
-                $('.context-menu').hide(100);
-                $('.context-menu-folder').hide(100);
-            }
-            });
-            
+                console.log('всё пропало! ' + msg);
             }
         })
     });

@@ -36,21 +36,16 @@ public class uploadHandler extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {   
-            
-        
-            for (Enumeration e = request.getHeaderNames(); e.hasMoreElements();)
-            {
-                System.out.println(e.nextElement());
-            }
-            String savePath = AbsPath.path + File.separator + MmmCookie.getInfoFromCookie(request, "login");
-            String descriprion = request.getParameter("description");
+            throws ServletException, IOException {              
+            String savePath = AbsPath.path + File.separator + MmmCookie.getInfoFromCookie(request, "path");
+            //String descriprion = request.getParameter("description");
             Part filePart = request.getPart("file");
             String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
             InputStream fileContent = filePart.getInputStream();
             File file = new File(savePath, fileName);
             Files.copy(fileContent, file.toPath());
             fileContent.close();
+            response.getWriter().write("done");
     }
 
     @Override
