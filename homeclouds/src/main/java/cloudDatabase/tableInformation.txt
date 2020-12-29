@@ -58,7 +58,7 @@ UNIQUE (full_path, person_login)
 CheckTableForExistence shared_files
 CREATE TABLE shared_files (
 id_of_share BIGSERIAL NOT NULL PRIMARY KEY,
-full_path VARCHAR(300) NOT NULL REFERENCES standard_file(full_path), 
+full_path VARCHAR(300) NOT NULL,
 creator_login VARCHAR(80) REFERENCES standard_person(login) NOT NULL,
 link VARCHAR(400) NOT NULL
 );
