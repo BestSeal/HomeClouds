@@ -11,9 +11,6 @@ support\linkGenerator.class
 support\MmmCookie.class
 support\AbsPath.class
 servlets\Register.class
-servlets\shareHandler.class
-servlets\uploadHandler.class
-support\FileManager.class
 cloudDatabase\DatabaseTables.class
 support\UsersList.class
 support\PersonalFolder.class
