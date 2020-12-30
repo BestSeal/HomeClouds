@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import support.FileTree;
 import cloudDatabase.*;
+import java.sql.Connection;
 
 /**
  *
@@ -38,14 +39,17 @@ public class Auth extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        
         String login = request.getParameter("login");
         String pass = request.getParameter("pass");
         System.out.println("----auth----");
         try {
-            int userId = DatabaseFunction.getPersonId(ConnectToDatabase.getConnection(), login);
+            Connection connection = ConnectToDatabase.getConnection();
+            DatabaseTables.createAllTables(connection);
+            int userId = DatabaseFunction.getPersonId(connection, login);
             if (userId != 0)
             {
-                List<String> userInfo = DatabaseIO.personSelect(ConnectToDatabase.getConnection(), userId);
+                List<String> userInfo = DatabaseIO.personSelect(connection, userId);
                 String userPass = userInfo.get(5);
                 System.out.println(pass + " " + userPass);
                 if (userPass.equals(pass))
@@ -66,21 +70,23 @@ public class Auth extends HttpServlet {
                     response.addCookie(pathCookie);
 
                     getServletContext().getRequestDispatcher("/WEB-INF/user/").forward(request, response); 
-
+                    connection.close();
                     return;
                 }
             }
             else
             {
-
-                response.getWriter().write("login error");
+                connection.close();
+                request.getRequestDispatcher("/WEB-INF/loginError.html").forward(request, response);
             }
             
 
         } catch (Exception e) {
             System.out.println(e);
         }
+        
         System.out.println("----auth failed----");
+        request.getRequestDispatcher("/WEB-INF/loginError.html").forward(request, response);
     }
     
     

@@ -17,7 +17,11 @@ import javax.servlet.http.HttpServletResponse;
 import jdk.internal.net.http.HttpRequestImpl;
 import support.*;
 import cloudDatabase.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.OutputStream;
 import java.util.List;
+import javax.servlet.ServletContext;
 /**
  *
  * @author docuc
@@ -35,12 +39,13 @@ public class shareHandler extends HttpServlet {
         String path = getParameterString(request, "path");
         String action = getParameterString(request, "action");
         String key = getParameterString(request, "key");
+        String domain = "localhost:8080"; // изменить перед заливом на пай
         System.out.println(login + " " + file + " " + action + " " + key + " " + path);
         if (action.equals("send"))
         {
             try {
                 Connection connection = ConnectToDatabase.getConnection();
-                String link = DatabaseIO.selectLinkByPath(connection, path, login);
+                String link = DatabaseIO.selectLinkByPath(connection, path + File.separator + file, login);
                 if (nonNull(link))
                 {
                     response.getWriter().write(link);
@@ -49,11 +54,10 @@ public class shareHandler extends HttpServlet {
                     return;
                 }
                 
-                link = "localhost:8080"; // изменить перед заливом на пай
-                link += linkGenerator.generateLink(login, file);
-                DatabaseIO.insertShare(connection, path, login, link);
-                
-                connection.commit();
+  
+                link = domain + linkGenerator.generateLink(login, file);
+                DatabaseIO.insertShare(connection, path + File.separator + file, login, link);            
+
                 connection.close();
                 System.out.println("new link:" + link);
                 response.getWriter().write(link);  
@@ -62,6 +66,58 @@ public class shareHandler extends HttpServlet {
                 System.out.println(e.getMessage());
             }
         }
+        if (action.equals("get") && nonNull(key))
+        {
+            System.out.println("trying to download");
+            try {
+                Connection connection = ConnectToDatabase.getConnection();
+                //String link = DatabaseIO.getPath(connection, )
+                String link = linkGenerator.collectLink(login, key, file, domain);
+                System.out.println(link);
+                
+                path = DatabaseIO.getPath(connection, link);
+                System.out.println(path);
+                connection.close();
+                                
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+        }
+        
+        if (action.equals("download") && key == null)
+        {
+            path += File.separator + file;
+        }
+                if (nonNull(path))
+        {
+                    path = AbsPath.path + path;
+                    System.out.println(path);
+                    File downloadFile = new File(path);
+                    FileInputStream inStream = new FileInputStream(downloadFile);
+                    ServletContext context = getServletContext();
+                    String mimeType = context.getMimeType(path);
+                    if (mimeType == null) {        
+                        mimeType = "application/octet-stream";
+                    }
+                    System.out.println("MIME type: " + mimeType);
+                    response.setContentType(mimeType);
+                    response.setContentLength((int) downloadFile.length());
+                    response.setHeader("Content-Disposition", "attachment; filename=" + downloadFile.getName());
+                    OutputStream outStream = response.getOutputStream();
+                     byte[] buffer = new byte[4096];
+                    int bytesRead = -1;
+         
+               while ((bytesRead = inStream.read(buffer)) != -1) {
+                        outStream.write(buffer, 0, bytesRead);
+                }
+                    
+                inStream.close();
+               outStream.close();
+        }             
+            else
+               response.getWriter().write("wrong link");  
+                    
+
         
     }
 
@@ -81,5 +137,5 @@ public class shareHandler extends HttpServlet {
         return null;
     }
     
-
+    
 }

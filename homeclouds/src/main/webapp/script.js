@@ -51,6 +51,10 @@ jQuery(function(){
     $('.context-menu').attr('data-name',"");
   });
   
+   $('.upload-message').on('mouseleave',function(){
+    $('.upload-message').hide(250);
+  });
+  
   $('.context-menu-folder').on('mouseleave',function(){
     $('.context-menu-folder').hide(250);
     $('.context-menu-folder').attr('data-name',"");
@@ -68,6 +72,7 @@ jQuery(function(){
        console.log((this).files);
        files = $(this).files;
     });
+        
         
     $('.upload-icon').on('click', function(event){
         console.log('click');
@@ -105,6 +110,21 @@ jQuery(function(){
             error: function(msg)
             {
                 console.log('всё пропало! ' + msg);
+                $('.upload-message').hide(250);
+                $.ajax({
+                    type: "POST",
+                    url: "/hop/",
+                    data: "path=" + Cookies.get('path')  + "&action=open" ,
+                    success : function (responseText)
+                    {
+                        console.log(responseText);
+                        $('.file-explorer').empty();
+                        $('.file-explorer').append($(responseText));
+                        $('.context-menu').hide(100);
+                        $('.context-menu-folder').hide(100);
+                    },
+
+                });
             }
         })
     });
@@ -154,10 +174,56 @@ jQuery(function(){
             });
             break;
         case 'download':
-            console.log("donwload " + name);
+            console.log("download " + name);
+            
+            $.ajax({
+                type: "GET",
+                url: '/share/',
+		data: "login=" + login + "&path=" +  path + "&action=" + act + "&file=" + name,
+                xhrFields: {
+                    'responseType': 'blob'
+                  },
+                success : function(data, status, xhr){
+                        $('.context-menu').hide(100);
+                        $('.context-menu-folder').hide(100);
+                        console.log(xhr.getResponseHeader('Content-Disposition'));
+                        var link = document.createElement('a'), filename = 'file.xlsx';
+                        if(xhr.getResponseHeader('Content-Disposition')){//имя файла
+                            filename = xhr.getResponseHeader('Content-Disposition');
+                            filename=filename.split("filename=")[1];
+                            filename=decodeURIComponent(escape(filename));
+                        }
+                        console.log(data);
+                        link.href = URL.createObjectURL(data);
+                        link.download = filename;
+                        link.click();
+                    }
+            });
             break;
         case 'delete':
             console.log("delete " + name);
+            $.ajax({
+                type: "GET",
+                url: "/delete/",
+                data: "login=" + login + "&path=" +  path + "&action=" + act + "&file=" + name,
+                success: function()
+            {
+                $.ajax({
+                    type: "POST",
+                    url: "/hop/",
+                    data: "path=" + Cookies.get('path')  + "&action=open" ,
+                    success : function (responseText)
+                    {
+                        console.log(responseText);
+                        $('.file-explorer').empty();
+                        $('.file-explorer').append($(responseText));
+                        $('.context-menu').hide(100);
+                        $('.context-menu-folder').hide(100);
+                    },
+
+                });
+            }
+            });
             break;
     }
     

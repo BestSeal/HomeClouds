@@ -18,5 +18,9 @@ public class linkGenerator {
         UUID key = UUID.randomUUID(); 
         return link.append("/share/?action=get&login=").append(login).append("&file=").append(file).append("&key=").append(key.toString()).toString();
     }
-            
+    
+    public static String collectLink(String login, String key, String file, String domain)
+    {
+        return domain + "/share/?action=get&login=" + login + "&file=" + file + "&key=" + key;
+    }
 }

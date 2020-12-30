@@ -9,6 +9,7 @@ servlets\ajaxHandler.class
 support\FileTree.class
 support\linkGenerator.class
 support\MmmCookie.class
+servlets\downloadHandler.class
 support\AbsPath.class
 servlets\Register.class
 servlets\shareHandler.class
