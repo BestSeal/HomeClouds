@@ -2,8 +2,7 @@ jQuery(function(){
 
 
     let path = Cookies.get('login');
-    Cookies.set('path',path);
-    Cookies.set('login',"docu");//убрать позже
+    Cookies.set('path',path);//убрать позже
     console.log("cookies set");
     $.ajax({
         type: "POST",
@@ -40,6 +39,53 @@ jQuery(function(){
         $('.context-menu').css('left', event.pageX - 12);
     }
   });
+
+    $('.file-explorer').on('dblclick','.button',function(){
+        console.log($(this).attr('data-name'));
+        if ($(this).attr('data-type') == "folder"){
+                let name = $(this).attr('data-name');
+                let path = Cookies.get("path");
+                let tmp = path + "/" + name;
+                console.log(tmp);
+                $.ajax({
+                type: "POST",
+                url: "/hop/",
+                data: "path=" + tmp  + "&action=" + "open",
+                success : function (responseText)
+            {
+                console.log(responseText);
+                Cookies.set("path", tmp);
+                console.log(tmp);
+                $('.file-explorer').empty();
+                $('.file-explorer').append($(responseText));
+                $('.context-menu').hide(100);
+                $('.context-menu-folder').hide(100);
+                $('.path').empty();
+                $('.path').append("<p>" + tmp + "</p>");
+            }
+            });
+    }
+        
+    });
+    
+    $('.file-explorer').on('mouseover','.button',function(){
+        
+        if ($(this)=="button")
+        {
+            $(this).attr('src, folder-open.png');
+        }
+        
+    });
+    
+        
+    $('.file-explorer').on('mouseleave','.button',function(){
+        
+        if ($(this)=="button")
+        {
+            $(this).attr('src, folder.png');
+        }
+        
+    });
 
   $('.message').on('mouseleave',function(){
     $('.message').empty();
@@ -203,7 +249,7 @@ jQuery(function(){
         case 'delete':
             console.log("delete " + name);
             $.ajax({
-                type: "GET",
+                type: "POST",
                 url: "/delete/",
                 data: "login=" + login + "&path=" +  path + "&action=" + act + "&file=" + name,
                 success: function()

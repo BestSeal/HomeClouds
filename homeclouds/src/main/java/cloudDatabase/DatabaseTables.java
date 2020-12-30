@@ -14,7 +14,7 @@ public class DatabaseTables
 {
 
 	final static String codeWord = "CheckTableForExistence"; // perhaps not final, but
-	final static String relativePathToFile = "D:\\dev\\py\\HomeClouds\\homeclouds\\src\\main\\java\\cloudDatabase\\tableInformation.txt";
+	final static String relativePathToFile = "opt/tomcat/users/tableInformation.txt";
 	// "src\\trying_db2\\tableInformation.txt"
 	
 	public static void createAllTables(Connection connection) throws FileNotFoundException, SQLException 

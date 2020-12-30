@@ -19,7 +19,7 @@ import support.*;
  *
  * @author docuc
  */
-@WebServlet(urlPatterns = {"/hop/"})
+@WebServlet(urlPatterns = {"/hop/*"})
 public class ajaxHandler extends HttpServlet {
 
 

@@ -31,7 +31,7 @@ public class Auth extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response)
     throws IOException {
         try {
-            getServletContext().getRequestDispatcher("/WEB-INF/index.html").forward(request, response); 
+            request.getRequestDispatcher("/WEB-INF/index.html").forward(request, response); 
         } catch (Exception e) {
         }
     }

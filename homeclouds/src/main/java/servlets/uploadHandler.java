@@ -29,7 +29,7 @@ import javax.servlet.http.Part;
  *
  * @author docuc
  */
-@WebServlet("/upload/") 
+@WebServlet("/upload/*") 
 @MultipartConfig  
 public class uploadHandler extends HttpServlet {
 

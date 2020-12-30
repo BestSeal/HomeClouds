@@ -62,7 +62,7 @@ public class AuthFilter implements Filter {
     System.out.println("well, woops");
     res.sendRedirect("../");
     //req.getRequestDispatcher("WEB-INF/auth/login_page.jsp").forward(request, response);
-     System.out.println("----filter done----");  
+    System.out.println("----filter done----");  
     }
  
 }

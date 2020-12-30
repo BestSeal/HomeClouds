@@ -26,7 +26,7 @@ import javax.servlet.ServletContext;
  *
  * @author docuc
  */
-@WebServlet(urlPatterns = {"/share/"})
+@WebServlet(urlPatterns = {"/share/*"})
 public class shareHandler extends HttpServlet {
 
 
@@ -39,7 +39,7 @@ public class shareHandler extends HttpServlet {
         String path = getParameterString(request, "path");
         String action = getParameterString(request, "action");
         String key = getParameterString(request, "key");
-        String domain = "localhost:8080"; // изменить перед заливом на пай
+        String domain = "homeclouds.hopto.org:8080"; // изменить перед заливом на пай
         System.out.println(login + " " + file + " " + action + " " + key + " " + path);
         if (action.equals("send"))
         {

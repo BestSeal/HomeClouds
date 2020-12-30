@@ -21,17 +21,16 @@ import support.*;
  * @author docuc
  */
 //TESTS!!!!!
-@WebServlet(urlPatterns = {"/register"})
+@WebServlet(name = "Register", urlPatterns = {"/register/*"})
 public class Register extends HttpServlet {
     
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response)
     throws IOException {
         try {
-            getServletContext().getRequestDispatcher("/WEB-INF/register/index.html").forward(request, response); 
+            request.getRequestDispatcher("/WEB-INF/register/index.html").forward(request, response); 
         } catch (Exception e) {
         }
-        
     }
     
     @Override
@@ -44,7 +43,9 @@ public class Register extends HttpServlet {
         String name = request.getParameter("name");
         try {
             Connection connection = ConnectToDatabase.getConnection();
+            DatabaseTables.createAllTables(connection);
             System.out.println("------------ register -------------");
+            
             if (DatabaseFunction.getPersonId(connection, login) != 0)
             {
                 System.out.println("user exists");
